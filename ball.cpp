@@ -1,15 +1,12 @@
 // This software is part of OpenMono, see http://developer.openmono.com
 // Released under the MIT license, see LICENSE.txt
 #include "ball.hpp"
+#include "constants.hpp"
 
 using mono::geo::Point;
 using mono::geo::Rect;
 using mono::geo::Circle;
 using mono::display::Color;
-
-#define radius 5
-#define green Color(0,48,0)
-#define black mono::display::BlackColor
 
 Ball::Ball (Point const & center_)
 :
@@ -25,4 +22,8 @@ void Ball::repaint ()
   painter.drawFillRect(ViewRect(), true);
   painter.setForegroundColor(green);
   painter.drawFillRect(ViewRect().X(), ViewRect().Y(), radius * 2 , radius * 2);
+}
+
+void Ball::tick (SharedState & state)
+{
 }

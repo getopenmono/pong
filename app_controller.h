@@ -3,11 +3,17 @@
 #ifndef app_controller_h
 #define app_controller_h
 #include <mono.h>
-#include <ball.hpp>
-#include <paddle.hpp>
+#include "shared-state.hpp"
+#include "ball.hpp"
+#include "paddle.hpp"
+#include "scheduler.hpp"
 
-class AppController : public mono::IApplication
+class AppController
+:
+  public mono::IApplication
 {
+  SharedState state;
+  Scheduler scheduler;
   Ball ball;
   Paddle player;
   Paddle computer;
