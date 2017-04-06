@@ -15,7 +15,6 @@ class ITickable
 {
 public:
   virtual void tick (SharedState & state) = 0;
-  virtual void repaint () = 0;
 };
 
 #endif // pong_itickable_h

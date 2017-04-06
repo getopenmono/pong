@@ -14,10 +14,34 @@ Human::Human ()
 {
 }
 
-void Human::reset ()
+void Human::reset (int encoderPulses)
 {
-  setPosition(Point(50, screenWidth-paddleWidth-margin));
+  lastPulses = encoderPulses;
+  setPosition(Point(0, screenWidth-paddleWidth-margin));
 }
+
+/*
+void Human::moveTo (uint16_t x)
+{
+  uint16_t y = Position().Y();
+  uint16_t oldX = Position().X();
+  // Erase and paint only non-overlapping parts.
+  painter.setBackgroundColor(black);
+  if (x > oldX)
+  {
+    painter.drawFillRect(oldX, y, oldX - x, paddleWidth, true);
+    painter.setBackgroundColor(green);
+    painter.drawFillRect(oldX + paddleLength, y, oldX - x, paddleWidth, true);
+  }
+  else if (x < oldX)
+  {
+    painter.drawFillRect(x + paddleLength, y, oldX - x, paddleWidth, true);
+    painter.setBackgroundColor(green);
+    painter.drawFillRect(x, y, oldX - x, paddleWidth, true);
+  }
+  setPosition(Point(x, y));
+}
+*/
 
 void Human::erase ()
 {
@@ -31,26 +55,42 @@ void Human::repaint ()
   painter.drawFillRect(ViewRect(), true);
 }
 
+bool Human::paddleCoversCenter ()
+{
+  uint16_t x = Position().X();
+  uint16_t middle = screenHeight / 2;
+  return (x < middle && x + paddleLength > middle);
+}
+
 void Human::tick (SharedState & state)
 {
   static int lastPulses = 0;
   switch (state.game)
   {
     case SharedState::Reset:
-      return reset();
-    case SharedState::WaitingForPlayersToReturnToCenter:
-      // if (position near center and some movement has been made) change state
+      reset(state.encoderPulses);
+      repaint();
+      return;
+    case SharedState::WaitingForHumanToReturnToCenter:
+      break;
+    case SharedState::ComputerToServe:
       break;
     case SharedState::Sleep:
       return;
   }
-  erase();
   int const direction = state.encoderPulses - lastPulses;
   lastPulses = state.encoderPulses;
-  int x = Position().X() + direction * pulsesPerPixel;
+  int oldX = Position().X();
+  int x = oldX + direction * pulsesPerPixel;
   if (x < 0)
     x = 0;
   if (x > screenHeight - paddleLength)
     x = screenHeight - paddleLength;
-  setPosition(Point(x, Position().Y()));
+  if (x != oldX)
+  {
+    erase();
+    setPosition(Point(x, Position().Y()));
+    repaint();
+  }
+  state.humanReady = paddleCoversCenter();
 }

@@ -10,8 +10,11 @@ class Computer
   public ITickable,
   public mono::ui::View
 {
+  void reset ();
+  void erase ();
+  void followBall (uint16_t ballX);
 public:
-  Computer (mono::geo::Rect const & rectangle);
+  Computer ();
   virtual void repaint ();
   virtual void tick (SharedState & state);
 };

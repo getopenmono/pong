@@ -21,18 +21,20 @@ void Encoder::tick (SharedState & state)
   {
     case SharedState::Reset:
       return reset(state.encoderPulses);
-    case SharedState::WaitingForPlayersToReturnToCenter:
-      randomMove(state.encoderPulses);
-      return;
+    case SharedState::WaitingForHumanToReturnToCenter:
+      break;
+    case SharedState::ComputerToServe:
+      break;
     case SharedState::Sleep:
       return;
   }
+  randomMove(state.encoderPulses);
 }
 
 void Encoder::randomMove (int & sharedPulses)
 {
   static int direction = 1;
   sharedPulses += direction;
-  if (sharedPulses > screenHeight/2 || sharedPulses < -screenHeight/2)
+  if (sharedPulses > screenHeight/2/pulsesPerPixel || sharedPulses < -screenHeight/2/pulsesPerPixel)
     direction = -direction;
 }

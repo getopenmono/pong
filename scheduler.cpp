@@ -16,6 +16,5 @@ void Scheduler::run (SharedState & state)
   for (std::vector<ITickable*>::iterator i = tickables.begin(); i != tickables.end(); ++i)
   {
     (*i)->tick(state);
-    (*i)->repaint();
   }
 }

@@ -15,7 +15,6 @@ class Encoder
 public:
   Encoder ();
   virtual void tick (SharedState & state);
-  virtual void repaint () {}
 };
 
 #endif // pong_encoder_h

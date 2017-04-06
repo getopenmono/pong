@@ -10,8 +10,10 @@ class Human
   public ITickable,
   public mono::ui::View
 {
-  void reset ();
+  void reset (int encoderPulses);
   void erase ();
+  bool paddleCoversCenter ();
+  int lastPulses;
 public:
   Human ();
   virtual void repaint ();

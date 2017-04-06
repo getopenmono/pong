@@ -3,14 +3,10 @@
 #include "app_controller.h"
 #include "constants.hpp"
 
-using mono::geo::Point;
-using mono::geo::Rect;
 using mono::String;
 
 AppController::AppController ()
 :
-  //player(Rect(50, 220-paddleWidth-margin, paddleLength, paddleWidth)),
-  computer(Rect(100, 0+margin, paddleLength, paddleWidth)),
   timer(msResolution)
 {
   scheduler.add(&ball);
@@ -37,9 +33,13 @@ void AppController::mainLoop ()
   switch (state.game)
   {
     case SharedState::Reset:
-      state.game = SharedState::WaitingForPlayersToReturnToCenter;
+      state.game = SharedState::WaitingForHumanToReturnToCenter;
       break;
-    case SharedState::WaitingForPlayersToReturnToCenter:
+    case SharedState::WaitingForHumanToReturnToCenter:
+      if (state.humanReady)
+        state.game = SharedState::ComputerToServe;
+      break;
+    case SharedState::ComputerToServe:
       break;
     case SharedState::Sleep:
       break;
@@ -53,7 +53,8 @@ void AppController::sendDebugInfo ()
   static SharedState oldState;
   if (oldState != state)
   {
-    debugLine(String::Format("state=%d, sleep=%d, pulses=%d, ms=%d", state.game, state.msBedTime, state.encoderPulses, state.msNow));
+    debugLine(String::Format("state=%d, sleep=%d, pulses=%d, ready=%d ball=%d ms=%d",
+      state.game, state.msBedTime, state.encoderPulses, state.humanReady, state.ballX, state.msNow));
   }
   oldState = state;
 }

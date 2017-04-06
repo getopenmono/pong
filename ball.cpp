@@ -5,8 +5,6 @@
 
 using mono::geo::Point;
 using mono::geo::Rect;
-using mono::geo::Circle;
-using mono::display::Color;
 
 Ball::Ball ()
 :
@@ -36,10 +34,15 @@ void Ball::tick (SharedState & state)
   switch (state.game)
   {
     case SharedState::Reset:
-      return reset();
-    case SharedState::WaitingForPlayersToReturnToCenter:
+      reset();
+      repaint();
       return;
+    case SharedState::WaitingForHumanToReturnToCenter:
+      return;
+    case SharedState::ComputerToServe:
+      break;
     case SharedState::Sleep:
       return;
   }
+  state.ballX = Position().X();
 }

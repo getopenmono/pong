@@ -3,14 +3,24 @@
 #include "computer.hpp"
 #include "constants.hpp"
 
+using mono::geo::Point;
 using mono::geo::Rect;
-using mono::geo::Circle;
-using mono::display::Color;
 
-Computer::Computer (Rect const & rectangle)
+Computer::Computer ()
 :
-  View(rectangle)
+  View(Rect(0, 0, paddleLength, paddleWidth))
 {
+}
+
+void Computer::reset ()
+{
+  setPosition(Point(100, margin));
+}
+
+void Computer::erase ()
+{
+  painter.setBackgroundColor(black);
+  painter.drawFillRect(ViewRect(), true);
 }
 
 void Computer::repaint ()
@@ -19,15 +29,37 @@ void Computer::repaint ()
   painter.drawFillRect(ViewRect(), true);
 }
 
+void Computer::followBall (uint16_t ballX)
+{
+  int x = Position().X();
+  int direction = ballX - (x + paddleLength/2);
+  if (direction < 0)
+    x -= computerSpeed;
+  else if (direction > 0)
+    x += computerSpeed;
+  if (x != Position().X())
+  {
+    erase();
+    setPosition(Point(x, margin));
+    repaint();
+  }
+}
+
 void Computer::tick (SharedState & state)
 {
   switch (state.game)
   {
     case SharedState::Reset:
+      reset();
+      repaint();
       return;
-    case SharedState::WaitingForPlayersToReturnToCenter:
+    case SharedState::WaitingForHumanToReturnToCenter:
       return;
+    case SharedState::ComputerToServe:
+      // TODO: serve
+      break;
     case SharedState::Sleep:
       return;
   }
+  followBall(state.ballX);
 }
