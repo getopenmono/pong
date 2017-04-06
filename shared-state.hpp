@@ -22,6 +22,9 @@ struct SharedState
   uint16_t ballX;
   uint16_t ballY;
   bool computerHasBall;
+  bool computerMissedBall;
+  bool humanHasBall;
+  bool humanMissedBall;
 
   SharedState ();
   bool operator == (SharedState const & rhs);

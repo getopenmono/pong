@@ -14,6 +14,7 @@ Computer::Computer ()
 
 void Computer::reset ()
 {
+  erase();
   setPosition(Point(100, margin));
 }
 
@@ -48,10 +49,10 @@ void Computer::followBall (uint16_t ballX)
 bool Computer::calculateHasBall (uint16_t ballX, uint16_t ballY)
 {
   int y = Position().Y();
-  if (y + paddleWidth == ballY)
+  if (y + paddleWidth >= ballY)
   {
     int x = Position().X();
-    if (x <= ballX && (ballX + radius) <= (x + paddleLength))
+    if (x <= ballX && (ballX + 2 * radius) <= (x + paddleLength))
       return true;
   }
   return false;

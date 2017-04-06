@@ -16,6 +16,7 @@ Human::Human ()
 
 void Human::reset (int encoderPulses)
 {
+  erase();
   lastPulses = encoderPulses;
   setPosition(Point(0, screenWidth-paddleWidth-margin));
 }
@@ -62,6 +63,18 @@ bool Human::paddleCoversCenter ()
   return (x < middle && x + paddleLength > middle);
 }
 
+bool Human::calculateHasBall (uint16_t ballX, uint16_t ballY)
+{
+  int y = Position().Y();
+  if (y <= ballY + 2 * radius)
+  {
+    int x = Position().X();
+    if (x <= ballX && (ballX + 2 * radius) <= (x + paddleLength))
+      return true;
+  }
+  return false;
+}
+
 void Human::tick (SharedState & state)
 {
   static int lastPulses = 0;
@@ -95,4 +108,5 @@ void Human::tick (SharedState & state)
     repaint();
   }
   state.humanReady = paddleCoversCenter();
+  state.humanHasBall = calculateHasBall(state.ballX, state.ballY);
 }

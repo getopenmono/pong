@@ -15,6 +15,8 @@ class Ball
   void reset ();
   void erase ();
   void moveBallTo (mono::geo::Point position);
+  void computerReturnsBall ();
+  void humanReturnsBall ();
 public:
   Ball ();
   virtual void repaint ();

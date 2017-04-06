@@ -40,6 +40,18 @@ void Ball::moveBallTo (Point position)
   repaint();
 }
 
+void Ball::computerReturnsBall ()
+{
+  yDirection = ballSpeed;
+  xDirection = -2;
+}
+
+void Ball::humanReturnsBall ()
+{
+  yDirection = -ballSpeed;
+  xDirection = 2;
+}
+
 void Ball::tick (SharedState & state)
 {
   switch (state.game)
@@ -54,6 +66,10 @@ void Ball::tick (SharedState & state)
       yDirection = -ballSpeed;
       break;
     case SharedState::GameOn:
+      if (state.computerHasBall)
+        computerReturnsBall();
+      else if (state.humanHasBall)
+        humanReturnsBall();
       break;
     case SharedState::Sleep:
       return;
@@ -66,4 +82,8 @@ void Ball::tick (SharedState & state)
     state.ballX = x;
     state.ballY = y;
   }
+  if (y == 0)
+    state.computerMissedBall = true;
+  else if (y == screenWidth - 2 * radius)
+    state.humanMissedBall = true;
 }

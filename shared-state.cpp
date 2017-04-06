@@ -14,6 +14,9 @@ void SharedState::reset ()
   encoderPulses = 0;
   humanReady = false;
   computerHasBall = false;
+  computerMissedBall = false;
+  humanHasBall = false;
+  humanMissedBall = false;
   ballX = 0;
   ballY = 0;
 }
@@ -26,6 +29,9 @@ bool SharedState::operator == (SharedState const & rhs)
   if (humanReady != rhs.humanReady) return false;
   // if (ballX != rhs.ballX) return false;
   if (computerHasBall != rhs.computerHasBall) return false;
+  if (computerMissedBall != rhs.computerMissedBall) return false;
+  if (humanHasBall != rhs.humanHasBall) return false;
+  if (humanMissedBall != rhs.humanMissedBall) return false;
   return true;
 }
 

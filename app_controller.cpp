@@ -24,6 +24,18 @@ void AppController::resetGame ()
   timer.Start();
 }
 
+void AppController::computerLoosesOne()
+{
+  state.game = SharedState::Reset;
+  state.reset();
+}
+
+void AppController::humanLosesOne()
+{
+  state.game = SharedState::Reset;
+  state.reset();
+}
+
 void AppController::mainLoop ()
 {
   state.msNow += msResolution;
@@ -43,6 +55,10 @@ void AppController::mainLoop ()
         state.game = SharedState::GameOn;
       break;
     case SharedState::GameOn:
+      if (state.computerMissedBall)
+        computerLoosesOne();
+      else if (state.humanMissedBall)
+        humanLosesOne();
       break;
     case SharedState::Sleep:
       break;
@@ -56,9 +72,9 @@ void AppController::sendDebugInfo ()
   static SharedState oldState;
   if (oldState != state)
   {
-    debugLine(String::Format(" ms=%d state=%d, sleep=%d, pulses=%d, ready=%d ball=%d computer=%d",
-      state.msNow, state.game, state.msBedTime, state.encoderPulses, state.humanReady, state.ballX,
-      state.computerHasBall
+    debugLine(String::Format("state=%d sleep=%d ready=%d computer=%d,%d human=%d,%d ",
+      state.game, state.msBedTime, state.humanReady, state.computerHasBall,
+      state.computerMissedBall, state.humanHasBall, state.humanMissedBall
       ));
   }
   oldState = state;
@@ -76,7 +92,6 @@ void AppController::monoWakeFromReset ()
 
 void AppController::monoWillGotoSleep ()
 {
-  // timer.Stop();  TODO: Is this necessary?
   state.game = SharedState::Sleep;
   scheduler.run(state);
 }

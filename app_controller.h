@@ -22,6 +22,8 @@ class AppController
   Computer computer;
   mono::Timer timer;
   void resetGame ();
+  void computerLoosesOne ();
+  void humanLosesOne ();
   void mainLoop ();
   void sendDebugInfo ();
   void debugLine (mono::String msg);

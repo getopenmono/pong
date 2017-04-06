@@ -13,6 +13,7 @@ class Human
   void reset (int encoderPulses);
   void erase ();
   bool paddleCoversCenter ();
+  bool calculateHasBall (uint16_t ballX, uint16_t ballY);
   int lastPulses;
 public:
   Human ();
