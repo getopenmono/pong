@@ -5,6 +5,17 @@
 
 struct SharedState
 {
+  enum Game
+  {
+    Reset,
+    WaitingForPlayersToReturnToCenter,
+    Sleep
+  }
+  game;
+  int msNow;
+  int msBedTime;
+  int encoderPulses;
+
   SharedState ();
 };
 

@@ -17,5 +17,10 @@ using mono::display::Color;
 #define radius 5
 #define green Color(0,48,0)
 #define black mono::display::BlackColor
+#define msResolution 10
+#define msInactivityTimeout 7000
+
+#define screenWidth 220
+#define screenHeight 176
 
 #endif // pong_constants_h

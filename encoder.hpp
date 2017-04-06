@@ -1,21 +1,20 @@
 // This software is part of OpenMono, see http://developer.openmono.com
 // Released under the MIT license, see LICENSE.txt
-#ifndef pong_ball_h
-#define pong_ball_h
+#ifndef pong_encoder_h
+#define pong_encoder_h
 #include <mono.h>
 #include "itickable.hpp"
 
-class Ball
+class Encoder
 :
-  public ITickable,
-  public mono::ui::View
+  public ITickable
 {
-  mono::geo::Point center;
+  int lastPulse;
+  void reset (int&);
 public:
-  Ball ();
-  void reset ();
-  virtual void repaint ();
+  Encoder ();
   virtual void tick (SharedState & state);
+  virtual void repaint () {}
 };
 
-#endif // pong_ball_h
+#endif // pong_encoder_h

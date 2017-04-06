@@ -3,5 +3,9 @@
 #include "shared-state.hpp"
 
 SharedState::SharedState ()
+:
+  game(Reset),
+  msNow(0),
+  encoderPulses(0)
 {
 }

@@ -8,11 +8,18 @@ using mono::geo::Rect;
 using mono::geo::Circle;
 using mono::display::Color;
 
-Ball::Ball (Point const & center_)
+Ball::Ball ()
 :
-  View(Rect(center_.X() - radius, center_.Y() - radius, center_.X() + radius, center_.Y() + radius)),
-  center(center_)
+  View(Rect(0, 0, 2 * radius, 2 * radius)),
+  center(0, 0)
 {
+}
+
+void Ball::reset ()
+{
+  center.setX(screenHeight/2);
+  center.setY(screenWidth/2);
+  setPosition(Point(center.X() - radius, center.Y() - radius));
 }
 
 void Ball::repaint ()
@@ -26,4 +33,13 @@ void Ball::repaint ()
 
 void Ball::tick (SharedState & state)
 {
+  switch (state.game)
+  {
+    case SharedState::Reset:
+      return reset();
+    case SharedState::WaitingForPlayersToReturnToCenter:
+      return;
+    case SharedState::Sleep:
+      return;
+  }
 }

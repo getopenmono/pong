@@ -5,7 +5,9 @@
 #include <mono.h>
 #include "shared-state.hpp"
 #include "ball.hpp"
-#include "paddle.hpp"
+#include "computer.hpp"
+#include "human.hpp"
+#include "encoder.hpp"
 #include "scheduler.hpp"
 
 class AppController
@@ -15,8 +17,12 @@ class AppController
   SharedState state;
   Scheduler scheduler;
   Ball ball;
-  Paddle player;
-  Paddle computer;
+  Human player;
+  Encoder joystick;
+  Computer computer;
+  mono::Timer timer;
+  void resetGame ();
+  void mainLoop ();
 public:
   AppController ();
   void monoWakeFromReset ();
