@@ -11,6 +11,7 @@ class Encoder
 {
   int lastPulse;
   void reset (int&);
+  void randomMove (int&);
 public:
   Encoder ();
   virtual void tick (SharedState & state);

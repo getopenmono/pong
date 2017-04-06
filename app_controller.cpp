@@ -5,10 +5,11 @@
 
 using mono::geo::Point;
 using mono::geo::Rect;
+using mono::String;
 
 AppController::AppController ()
 :
-  player(Rect(50, 220-paddleWidth-margin, paddleLength, paddleWidth)),
+  //player(Rect(50, 220-paddleWidth-margin, paddleLength, paddleWidth)),
   computer(Rect(100, 0+margin, paddleLength, paddleWidth)),
   timer(msResolution)
 {
@@ -37,13 +38,29 @@ void AppController::mainLoop ()
   {
     case SharedState::Reset:
       state.game = SharedState::WaitingForPlayersToReturnToCenter;
-      return;
+      break;
     case SharedState::WaitingForPlayersToReturnToCenter:
-      return;
+      break;
     case SharedState::Sleep:
-      return;
+      break;
   }
+  sendDebugInfo();
   scheduler.run(state);
+}
+
+void AppController::sendDebugInfo ()
+{
+  static SharedState oldState;
+  if (oldState != state)
+  {
+    debugLine(String::Format("state=%d, sleep=%d, pulses=%d, ms=%d", state.game, state.msBedTime, state.encoderPulses, state.msNow));
+  }
+  oldState = state;
+}
+
+void AppController::debugLine (String msg)
+{
+  printf(String::Format("%s\r\n",msg())());
 }
 
 void AppController::monoWakeFromReset ()

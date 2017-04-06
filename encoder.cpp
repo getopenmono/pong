@@ -1,6 +1,7 @@
 // This software is part of OpenMono, see http://developer.openmono.com
 // Released under the MIT license, see LICENSE.txt
 #include "encoder.hpp"
+#include "constants.hpp"
 
 Encoder::Encoder ()
 :
@@ -21,8 +22,17 @@ void Encoder::tick (SharedState & state)
     case SharedState::Reset:
       return reset(state.encoderPulses);
     case SharedState::WaitingForPlayersToReturnToCenter:
+      randomMove(state.encoderPulses);
       return;
     case SharedState::Sleep:
       return;
   }
+}
+
+void Encoder::randomMove (int & sharedPulses)
+{
+  static int direction = 1;
+  sharedPulses += direction;
+  if (sharedPulses > screenHeight/2 || sharedPulses < -screenHeight/2)
+    direction = -direction;
 }

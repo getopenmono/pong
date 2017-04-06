@@ -9,3 +9,16 @@ SharedState::SharedState ()
   encoderPulses(0)
 {
 }
+
+bool SharedState::operator == (SharedState const & rhs)
+{
+  if (game != rhs.game) return false;
+  if (msBedTime != rhs.msBedTime) return false;
+  if (encoderPulses != rhs.encoderPulses) return false;
+  return true;
+}
+
+bool SharedState::operator != (SharedState const & rhs)
+{
+  return ! ((*this) == rhs);
+}

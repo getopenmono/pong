@@ -23,6 +23,8 @@ class AppController
   mono::Timer timer;
   void resetGame ();
   void mainLoop ();
+  void sendDebugInfo ();
+  void debugLine (mono::String msg);
 public:
   AppController ();
   void monoWakeFromReset ();

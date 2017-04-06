@@ -18,7 +18,8 @@ using mono::display::Color;
 #define green Color(0,48,0)
 #define black mono::display::BlackColor
 #define msResolution 10
-#define msInactivityTimeout 7000
+#define msInactivityTimeout 20000
+#define pulsesPerPixel 3
 
 #define screenWidth 220
 #define screenHeight 176

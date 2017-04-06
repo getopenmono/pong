@@ -10,8 +10,10 @@ class Human
   public ITickable,
   public mono::ui::View
 {
+  void reset ();
+  void erase ();
 public:
-  Human (mono::geo::Rect const & rectangle);
+  Human ();
   virtual void repaint ();
   virtual void tick (SharedState & state);
 };

@@ -17,6 +17,8 @@ struct SharedState
   int encoderPulses;
 
   SharedState ();
+  bool operator == (SharedState const & rhs);
+  bool operator != (SharedState const & rhs);
 };
 
 #endif // pong_shared_state_h
