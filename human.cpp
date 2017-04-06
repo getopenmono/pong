@@ -75,6 +75,8 @@ void Human::tick (SharedState & state)
       break;
     case SharedState::ComputerToServe:
       break;
+    case SharedState::GameOn:
+      break;
     case SharedState::Sleep:
       return;
   }

@@ -17,8 +17,7 @@ AppController::AppController ()
 
 void AppController::resetGame ()
 {
-  state.game = SharedState::Reset;
-  state.msNow = 0;
+  state.reset();
   state.msBedTime = msInactivityTimeout;
   scheduler.run(state);
   timer.setCallback(this, &AppController::mainLoop);
@@ -40,6 +39,10 @@ void AppController::mainLoop ()
         state.game = SharedState::ComputerToServe;
       break;
     case SharedState::ComputerToServe:
+      if (state.computerHasBall)
+        state.game = SharedState::GameOn;
+      break;
+    case SharedState::GameOn:
       break;
     case SharedState::Sleep:
       break;
@@ -53,8 +56,10 @@ void AppController::sendDebugInfo ()
   static SharedState oldState;
   if (oldState != state)
   {
-    debugLine(String::Format("state=%d, sleep=%d, pulses=%d, ready=%d ball=%d ms=%d",
-      state.game, state.msBedTime, state.encoderPulses, state.humanReady, state.ballX, state.msNow));
+    debugLine(String::Format(" ms=%d state=%d, sleep=%d, pulses=%d, ready=%d ball=%d computer=%d",
+      state.msNow, state.game, state.msBedTime, state.encoderPulses, state.humanReady, state.ballX,
+      state.computerHasBall
+      ));
   }
   oldState = state;
 }

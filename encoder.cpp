@@ -24,6 +24,8 @@ void Encoder::tick (SharedState & state)
     case SharedState::WaitingForHumanToReturnToCenter:
       break;
     case SharedState::ComputerToServe:
+      return;
+    case SharedState::GameOn:
       break;
     case SharedState::Sleep:
       return;

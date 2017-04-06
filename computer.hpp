@@ -13,6 +13,7 @@ class Computer
   void reset ();
   void erase ();
   void followBall (uint16_t ballX);
+  bool calculateHasBall (uint16_t ballX, uint16_t ballY);
 public:
   Computer ();
   virtual void repaint ();

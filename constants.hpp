@@ -21,6 +21,7 @@ using mono::display::Color;
 #define msInactivityTimeout 20000
 #define pulsesPerPixel 3
 #define computerSpeed 1
+#define ballSpeed 3
 
 #define screenWidth 220
 #define screenHeight 176

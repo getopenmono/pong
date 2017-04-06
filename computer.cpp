@@ -45,6 +45,18 @@ void Computer::followBall (uint16_t ballX)
   }
 }
 
+bool Computer::calculateHasBall (uint16_t ballX, uint16_t ballY)
+{
+  int y = Position().Y();
+  if (y + paddleWidth == ballY)
+  {
+    int x = Position().X();
+    if (x <= ballX && (ballX + radius) <= (x + paddleLength))
+      return true;
+  }
+  return false;
+}
+
 void Computer::tick (SharedState & state)
 {
   switch (state.game)
@@ -56,10 +68,12 @@ void Computer::tick (SharedState & state)
     case SharedState::WaitingForHumanToReturnToCenter:
       return;
     case SharedState::ComputerToServe:
-      // TODO: serve
+      break;
+    case SharedState::GameOn:
       break;
     case SharedState::Sleep:
       return;
   }
   followBall(state.ballX);
+  state.computerHasBall = calculateHasBall(state.ballX, state.ballY);
 }

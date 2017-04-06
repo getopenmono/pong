@@ -10,10 +10,13 @@ class Ball
   public ITickable,
   public mono::ui::View
 {
-  mono::geo::Point center;
+  int xDirection;
+  int yDirection;
+  void reset ();
+  void erase ();
+  void moveBallTo (mono::geo::Point position);
 public:
   Ball ();
-  void reset ();
   virtual void repaint ();
   virtual void tick (SharedState & state);
 };

@@ -8,25 +8,36 @@ using mono::geo::Rect;
 
 Ball::Ball ()
 :
-  View(Rect(0, 0, 2 * radius, 2 * radius)),
-  center(0, 0)
+  View(Rect(0, 0, 2 * radius, 2 * radius))
 {
 }
 
 void Ball::reset ()
 {
-  center.setX(screenHeight/2);
-  center.setY(screenWidth/2);
-  setPosition(Point(center.X() - radius, center.Y() - radius));
+  uint16_t x = screenHeight/2;
+  uint16_t y = screenWidth/2;
+  setPosition(Point(x - radius, y - radius));
+  xDirection = 0;
+  yDirection = 0;
+}
+
+void Ball::erase ()
+{
+  painter.setForegroundColor(black);
+  painter.drawFillRect(ViewRect().X(), ViewRect().Y(), radius * 2 , radius * 2);
 }
 
 void Ball::repaint ()
 {
-  // painter.useAntialiasedDrawing();
-  painter.setBackgroundColor(black);
-  painter.drawFillRect(ViewRect(), true);
   painter.setForegroundColor(green);
   painter.drawFillRect(ViewRect().X(), ViewRect().Y(), radius * 2 , radius * 2);
+}
+
+void Ball::moveBallTo (Point position)
+{
+  erase();
+  setPosition(position);
+  repaint();
 }
 
 void Ball::tick (SharedState & state)
@@ -36,13 +47,23 @@ void Ball::tick (SharedState & state)
     case SharedState::Reset:
       reset();
       repaint();
-      return;
+      break;
     case SharedState::WaitingForHumanToReturnToCenter:
       return;
     case SharedState::ComputerToServe:
+      yDirection = -ballSpeed;
+      break;
+    case SharedState::GameOn:
       break;
     case SharedState::Sleep:
       return;
   }
-  state.ballX = Position().X();
+  uint16_t x = Position().X() + xDirection;
+  uint16_t y = Position().Y() + yDirection;
+  if (x != Position().X() || y != Position().Y())
+  {
+    moveBallTo(Point(x, y));
+    state.ballX = x;
+    state.ballY = y;
+  }
 }

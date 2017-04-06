@@ -11,6 +11,7 @@ struct SharedState
     Reset,
     WaitingForHumanToReturnToCenter,
     ComputerToServe,
+    GameOn,
     Sleep
   }
   game;
@@ -19,10 +20,13 @@ struct SharedState
   int encoderPulses;
   bool humanReady;
   uint16_t ballX;
+  uint16_t ballY;
+  bool computerHasBall;
 
   SharedState ();
   bool operator == (SharedState const & rhs);
   bool operator != (SharedState const & rhs);
+  void reset ();
 };
 
 #endif // pong_shared_state_h
