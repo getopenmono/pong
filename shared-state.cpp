@@ -15,10 +15,12 @@ void SharedState::reset ()
   msNow = 0;
   encoderPulses = 0;
   humanReady = false;
-  computerHasBall = false;
+  //computerHasBall = false;
   computerMissedBall = false;
   humanHasBall = false;
   humanMissedBall = false;
+  computerX = 0;
+  humanX = 0;
   ballX = screenHeight / 2;
   ballY = screenWidth / 2;
 }

@@ -14,6 +14,7 @@ Ball::Ball ()
 
 void Ball::reset ()
 {
+  erase();
   uint16_t x = screenHeight/2;
   uint16_t y = screenWidth/2;
   setPosition(Point(x - radius, y - radius));
@@ -54,7 +55,64 @@ void Ball::humanReturnsBall ()
   xDirection = ballSpeed;
 }
 
-Point Ball::calculateNextPosition ()
+Point Ball::calculateNextPosition (uint16_t computerX, uint16_t humanX)
+{
+  int x = Position().X();
+  int y = Position().Y();
+  int xCenter = x + radius;
+  int yBottom = y + 2 * radius;
+  // Computer hit?
+  if (y <= margin + paddleWidth)
+  {
+    printf("Top %d vs %d\r\n", xCenter, computerX);
+    // Half of ball must be on paddle for hit.
+    if (xCenter > computerX && xCenter < computerX + paddleLength)
+    {
+      printf("Computer Hit\r\n");
+      // Bounce back.
+      yDirection = ballSpeed;
+      // At an angle proportional to distance to center of paddle.
+      if (x < computerX)
+        xDirection = -2 * ballSpeed;
+      else if (xCenter + radius > computerX + paddleLength)
+        xDirection = 2 * ballSpeed;
+      else if (x < computerX + paddleLength / 3)
+        xDirection = -ballSpeed;
+      else if (xCenter + radius > computerX + paddleLength / 3 + paddleLength / 3)
+        xDirection = ballSpeed;
+      else
+        xDirection = 0;
+      printf("xDirection = %d\r\n", xDirection);
+    }
+  }
+  // Human hit?
+  else if (yBottom >= screenWidth - margin - paddleWidth)
+  {
+    printf("Bottom %d vs %d\r\n", xCenter, humanX);
+    // Half of ball must be on paddle for hit.
+    if (xCenter > humanX && xCenter < humanX + paddleLength)
+    {
+      printf("Human Hit\r\n");
+      // Bounce back.
+      yDirection = -ballSpeed;
+      // At an angle proportional to distance to center of paddle.
+      if (x < humanX)
+        xDirection = -2 * ballSpeed;
+      else if (xCenter + radius > humanX + paddleLength)
+        xDirection = 2 * ballSpeed;
+      else if (x < humanX + paddleLength / 3)
+        xDirection = -ballSpeed;
+      else if (xCenter + radius > humanX + paddleLength / 3 + paddleLength / 3)
+        xDirection = ballSpeed;
+      else
+        xDirection = 0;
+      printf("xDirection = %d\r\n", xDirection);
+    }
+  }
+  return effectuateDirection();
+}
+
+Point Ball::effectuateDirection ()
 {
   int x = Position().X() + xDirection;
   int y = Position().Y() + yDirection;
@@ -88,17 +146,13 @@ void Ball::tick (SharedState & state)
       yDirection = -ballSpeed;
       break;
     case SharedState::GameOn:
-      if (state.computerHasBall)
-        computerReturnsBall();
-      else if (state.humanHasBall)
-        humanReturnsBall();
       break;
     case SharedState::Sleep:
       return;
     case SharedState::Crashed:
       return;
   }
-  Point corner = calculateNextPosition();
+  Point corner = calculateNextPosition(state.computerX, state.humanX);
   if (corner.X() != Position().X() || corner.Y() != Position().Y())
     moveBallTo(corner, state.ballX, state.ballY);
   if (corner.Y() == 0)
@@ -114,8 +168,4 @@ void Ball::tick (SharedState & state)
     state.crash = "ball y negative";
   if (Position().Y() + 2 * radius > screenWidth)
     state.crash = "ball y too high";
-
-  // TEST
-  if (Position().Y() + 2 * radius > screenWidth - margin - paddleWidth)
-    state.crash = "TMP ball y parst human";
 }

@@ -8,10 +8,10 @@ struct SharedState
 {
   enum Game
   {
-    Reset,
-    WaitingForHumanToReturnToCenter,
-    ComputerToServe,
-    GameOn,
+    Reset, // 0
+    WaitingForHumanToReturnToCenter, // 1
+    ComputerToServe, // 2
+    GameOn, // 3
     Sleep,
     Crashed
   }
@@ -23,6 +23,8 @@ struct SharedState
   bool humanReady;
   uint16_t ballX;
   uint16_t ballY;
+  uint16_t computerX;
+  uint16_t humanX;
   bool computerHasBall;
   bool computerMissedBall;
   bool humanHasBall;

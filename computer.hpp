@@ -4,12 +4,14 @@
 #define pong_computer_h
 #include <mono.h>
 #include "itickable.hpp"
+#include "rng.hpp"
 
 class Computer
 :
   public ITickable,
   public mono::ui::View
 {
+  Rng rng;
   void reset ();
   void erase ();
   void followBall (uint16_t ballX);

@@ -4,12 +4,14 @@
 #define pong_human_h
 #include <mono.h>
 #include "itickable.hpp"
+#include "rng.hpp"
 
 class Human
 :
   public ITickable,
   public mono::ui::View
 {
+  Rng rng;
   void reset (int encoderPulses);
   void erase ();
   bool paddleCoversCenter ();

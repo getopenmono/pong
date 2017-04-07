@@ -54,6 +54,8 @@ bool Human::calculateHasBall (uint16_t ballX, uint16_t ballY)
 
 void Human::followBall (uint16_t ballX)
 {
+  if (rng.random31b() % 3 == 0)
+    return;
   int x = Position().X();
   int direction = ballX - (x + paddleLength/2);
   if (direction < 0)
@@ -115,6 +117,7 @@ void Human::tick (SharedState & state)
     followEncoder(state.encoderPulses);
   state.humanReady = paddleCoversCenter();
   state.humanHasBall = calculateHasBall(state.ballX, state.ballY);
+  state.humanX = Position().X();
 
   if (Position().X() < 0)
     state.crash = "human x negative";

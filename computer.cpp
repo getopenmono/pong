@@ -32,6 +32,8 @@ void Computer::repaint ()
 
 void Computer::followBall (uint16_t ballX)
 {
+  if (rng.random31b() % 3 == 0)
+    return;
   int x = Position().X();
   int direction = ballX - (x + paddleLength/2);
   if (direction < 0)
@@ -83,6 +85,7 @@ void Computer::tick (SharedState & state)
   }
   followBall(state.ballX);
   state.computerHasBall = calculateHasBall(state.ballX, state.ballY);
+  state.computerX = Position().X();
 
   if (Position().X() < 0)
     state.crash = "computer x negative";
