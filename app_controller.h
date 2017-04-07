@@ -8,6 +8,7 @@
 #include "computer.hpp"
 #include "human.hpp"
 #include "encoder.hpp"
+#include "score.hpp"
 #include "scheduler.hpp"
 
 class AppController
@@ -20,6 +21,7 @@ class AppController
   Human player;
   Encoder joystick;
   Computer computer;
+  Score score;
   mono::Timer timer;
   void resetGame ();
   void computerLoosesOne ();

@@ -13,6 +13,7 @@ AppController::AppController ()
   scheduler.add(&player);
   scheduler.add(&computer);
   scheduler.add(&joystick);
+  scheduler.add(&score);
 }
 
 void AppController::resetGame ()

@@ -13,16 +13,17 @@ using mono::display::Color;
 
 #define margin 3
 #define paddleWidth 5
+#define digitWidth 5
 #define paddleLength 50
 #define radius 5
 #define green Color(0,48,0)
 #define black mono::display::BlackColor
-#define msResolution 10
+#define msResolution 8
 #define msInactivityTimeout 200000
 #define pulsesPerPixel 3
 #define computerSpeed 1
 #define ballSpeed 1
-#define computerPlaysForHuman true
+#define computerPlaysForHuman false
 
 #define screenWidth 220
 #define screenHeight 176

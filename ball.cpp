@@ -25,13 +25,13 @@ void Ball::reset ()
 void Ball::erase ()
 {
   painter.setForegroundColor(black);
-  painter.drawFillRect(ViewRect().X(), ViewRect().Y(), radius * 2 , radius * 2);
+  painter.drawFillRect(ViewRect().X(), ViewRect().Y(), radius * 2, radius * 2);
 }
 
 void Ball::repaint ()
 {
   painter.setForegroundColor(green);
-  painter.drawFillRect(ViewRect().X(), ViewRect().Y(), radius * 2 , radius * 2);
+  painter.drawFillRect(ViewRect().X(), ViewRect().Y(), radius * 2, radius * 2);
 }
 
 void Ball::moveBallTo (Point position, uint16_t & x, uint16_t & y)
@@ -64,11 +64,9 @@ Point Ball::calculateNextPosition (uint16_t computerX, uint16_t humanX)
   // Computer hit?
   if (y <= margin + paddleWidth)
   {
-    printf("Top %d vs %d\r\n", xCenter, computerX);
     // Half of ball must be on paddle for hit.
     if (xCenter > computerX && xCenter < computerX + paddleLength)
     {
-      printf("Computer Hit\r\n");
       // Bounce back.
       yDirection = ballSpeed;
       // At an angle proportional to distance to center of paddle.
@@ -76,23 +74,21 @@ Point Ball::calculateNextPosition (uint16_t computerX, uint16_t humanX)
         xDirection = -2 * ballSpeed;
       else if (xCenter + radius > computerX + paddleLength)
         xDirection = 2 * ballSpeed;
-      else if (x < computerX + paddleLength / 3)
+      else if (xCenter < computerX + paddleLength / 4)
         xDirection = -ballSpeed;
-      else if (xCenter + radius > computerX + paddleLength / 3 + paddleLength / 3)
+      else if (xCenter > computerX + paddleLength / 2 + paddleLength / 4)
         xDirection = ballSpeed;
       else
         xDirection = 0;
-      printf("xDirection = %d\r\n", xDirection);
+      // printf("Top %d vs %d, xDirection = %d\r\n", xCenter, computerX, xDirection);
     }
   }
   // Human hit?
   else if (yBottom >= screenWidth - margin - paddleWidth)
   {
-    printf("Bottom %d vs %d\r\n", xCenter, humanX);
     // Half of ball must be on paddle for hit.
     if (xCenter > humanX && xCenter < humanX + paddleLength)
     {
-      printf("Human Hit\r\n");
       // Bounce back.
       yDirection = -ballSpeed;
       // At an angle proportional to distance to center of paddle.
@@ -106,7 +102,7 @@ Point Ball::calculateNextPosition (uint16_t computerX, uint16_t humanX)
         xDirection = ballSpeed;
       else
         xDirection = 0;
-      printf("xDirection = %d\r\n", xDirection);
+      // printf("Bottom %d vs %d, xDirection = %d\r\n", xCenter, humanX, xDirection);
     }
   }
   return effectuateDirection();

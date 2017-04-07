@@ -4,11 +4,13 @@
 #define pong_encoder_h
 #include <mono.h>
 #include "itickable.hpp"
+#include "qei.hpp"
 
 class Encoder
 :
   public ITickable
 {
+  QEI qei;
   int lastPulse;
   void reset (int&);
   void randomMove (int&);

@@ -5,6 +5,7 @@
 
 Encoder::Encoder ()
 :
+  qei(J_RING1, J_RING2, NC, 24),
   lastPulse(0)
 {
 }
