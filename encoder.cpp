@@ -29,6 +29,8 @@ void Encoder::tick (SharedState & state)
       break;
     case SharedState::Sleep:
       return;
+    case SharedState::Crashed:
+      return;
   }
   randomMove(state.encoderPulses);
 }

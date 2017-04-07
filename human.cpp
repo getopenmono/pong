@@ -21,29 +21,6 @@ void Human::reset (int encoderPulses)
   setPosition(Point(0, screenWidth-paddleWidth-margin));
 }
 
-/*
-void Human::moveTo (uint16_t x)
-{
-  uint16_t y = Position().Y();
-  uint16_t oldX = Position().X();
-  // Erase and paint only non-overlapping parts.
-  painter.setBackgroundColor(black);
-  if (x > oldX)
-  {
-    painter.drawFillRect(oldX, y, oldX - x, paddleWidth, true);
-    painter.setBackgroundColor(green);
-    painter.drawFillRect(oldX + paddleLength, y, oldX - x, paddleWidth, true);
-  }
-  else if (x < oldX)
-  {
-    painter.drawFillRect(x + paddleLength, y, oldX - x, paddleWidth, true);
-    painter.setBackgroundColor(green);
-    painter.drawFillRect(x, y, oldX - x, paddleWidth, true);
-  }
-  setPosition(Point(x, y));
-}
-*/
-
 void Human::erase ()
 {
   painter.setBackgroundColor(black);
@@ -75,9 +52,46 @@ bool Human::calculateHasBall (uint16_t ballX, uint16_t ballY)
   return false;
 }
 
+void Human::followBall (uint16_t ballX)
+{
+  int x = Position().X();
+  int direction = ballX - (x + paddleLength/2);
+  if (direction < 0)
+    x -= computerSpeed;
+  else if (direction > 0)
+    x += computerSpeed;
+  if (x < 0)
+    x = 0;
+  else if (x > screenHeight - paddleLength)
+    x = screenHeight - paddleLength;
+  if (x != Position().X())
+  {
+    erase();
+    setPosition(Point(x, Position().Y()));
+    repaint();
+  }
+}
+
+void Human::followEncoder (int encoderPulses)
+{
+  int const direction = encoderPulses - lastPulses;
+  lastPulses = encoderPulses;
+  int oldX = Position().X();
+  int x = oldX + direction * pulsesPerPixel;
+  if (x < 0)
+    x = 0;
+  if (x > screenHeight - paddleLength)
+    x = screenHeight - paddleLength;
+  if (x != oldX)
+  {
+    erase();
+    setPosition(Point(x, Position().Y()));
+    repaint();
+  }
+}
+
 void Human::tick (SharedState & state)
 {
-  static int lastPulses = 0;
   switch (state.game)
   {
     case SharedState::Reset:
@@ -92,21 +106,18 @@ void Human::tick (SharedState & state)
       break;
     case SharedState::Sleep:
       return;
+    case SharedState::Crashed:
+      return;
   }
-  int const direction = state.encoderPulses - lastPulses;
-  lastPulses = state.encoderPulses;
-  int oldX = Position().X();
-  int x = oldX + direction * pulsesPerPixel;
-  if (x < 0)
-    x = 0;
-  if (x > screenHeight - paddleLength)
-    x = screenHeight - paddleLength;
-  if (x != oldX)
-  {
-    erase();
-    setPosition(Point(x, Position().Y()));
-    repaint();
-  }
+  if (computerPlaysForHuman)
+    followBall(state.ballX);
+  else
+    followEncoder(state.encoderPulses);
   state.humanReady = paddleCoversCenter();
   state.humanHasBall = calculateHasBall(state.ballX, state.ballY);
+
+  if (Position().X() < 0)
+    state.crash = "human x negative";
+  if (Position().X() + paddleLength > screenHeight)
+    state.crash = "human x too high";
 }

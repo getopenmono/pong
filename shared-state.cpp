@@ -1,6 +1,7 @@
 // This software is part of OpenMono, see http://developer.openmono.com
 // Released under the MIT license, see LICENSE.txt
 #include "shared-state.hpp"
+#include "constants.hpp"
 
 SharedState::SharedState ()
 {
@@ -10,6 +11,7 @@ SharedState::SharedState ()
 void SharedState::reset ()
 {
   game = Reset;
+  crash = 0;
   msNow = 0;
   encoderPulses = 0;
   humanReady = false;
@@ -17,13 +19,14 @@ void SharedState::reset ()
   computerMissedBall = false;
   humanHasBall = false;
   humanMissedBall = false;
-  ballX = 0;
-  ballY = 0;
+  ballX = screenHeight / 2;
+  ballY = screenWidth / 2;
 }
 
 bool SharedState::operator == (SharedState const & rhs)
 {
   if (game != rhs.game) return false;
+  if (crash != rhs.crash) return false;
   if (msBedTime != rhs.msBedTime) return false;
   // if (encoderPulses != rhs.encoderPulses) return false;
   if (humanReady != rhs.humanReady) return false;

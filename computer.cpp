@@ -38,6 +38,10 @@ void Computer::followBall (uint16_t ballX)
     x -= computerSpeed;
   else if (direction > 0)
     x += computerSpeed;
+  if (x < 0)
+    x = 0;
+  else if (x > screenHeight - paddleLength)
+    x = screenHeight - paddleLength;
   if (x != Position().X())
   {
     erase();
@@ -74,7 +78,14 @@ void Computer::tick (SharedState & state)
       break;
     case SharedState::Sleep:
       return;
+    case SharedState::Crashed:
+      return;
   }
   followBall(state.ballX);
   state.computerHasBall = calculateHasBall(state.ballX, state.ballY);
+
+  if (Position().X() < 0)
+    state.crash = "computer x negative";
+  if (Position().X() + paddleLength > screenHeight)
+    state.crash = "computer x too high";
 }

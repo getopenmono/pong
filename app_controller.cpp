@@ -19,26 +19,24 @@ void AppController::resetGame ()
 {
   state.reset();
   state.msBedTime = msInactivityTimeout;
-  scheduler.run(state);
   timer.setCallback(this, &AppController::mainLoop);
   timer.Start();
 }
 
 void AppController::computerLoosesOne()
 {
-  state.game = SharedState::Reset;
   state.reset();
 }
 
 void AppController::humanLosesOne()
 {
-  state.game = SharedState::Reset;
   state.reset();
 }
 
 void AppController::mainLoop ()
 {
-  state.msNow += msResolution;
+  sendDebugInfo();
+  scheduler.run(state);
   if (state.msBedTime == state.msNow)
     return mono::IApplicationContext::EnterSleepMode();
   switch (state.game)
@@ -62,9 +60,10 @@ void AppController::mainLoop ()
       break;
     case SharedState::Sleep:
       break;
+    case SharedState::Crashed:
+      break;
   }
-  sendDebugInfo();
-  scheduler.run(state);
+  state.msNow += msResolution;
 }
 
 void AppController::sendDebugInfo ()
@@ -72,9 +71,15 @@ void AppController::sendDebugInfo ()
   static SharedState oldState;
   if (oldState != state)
   {
-    debugLine(String::Format("state=%d sleep=%d ready=%d computer=%d,%d human=%d,%d ",
-      state.game, state.msBedTime, state.humanReady, state.computerHasBall,
-      state.computerMissedBall, state.humanHasBall, state.humanMissedBall
+    if (state.crash != 0)
+    {
+      debugLine(state.crash);
+      state.game = SharedState::Crashed;
+    }
+    else
+      debugLine(String::Format("state=%d sleep=%d ready=%d computer=%d,%d human=%d,%d ",
+        state.game, state.msBedTime, state.humanReady, state.computerHasBall,
+        state.computerMissedBall, state.humanHasBall, state.humanMissedBall
       ));
   }
   oldState = state;

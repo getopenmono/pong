@@ -12,9 +12,11 @@ struct SharedState
     WaitingForHumanToReturnToCenter,
     ComputerToServe,
     GameOn,
-    Sleep
+    Sleep,
+    Crashed
   }
   game;
+  char const * crash;
   int msNow;
   int msBedTime;
   int encoderPulses;
