@@ -18,9 +18,9 @@ using mono::display::Color;
 #define radius 5
 #define green Color(0,48,0)
 #define black mono::display::BlackColor
-#define msResolution 8
+#define msResolution 10
 #define msInactivityTimeout 200000
-#define pulsesPerPixel 3
+#define pulsesPerPixel 5
 #define computerSpeed 1
 #define ballSpeed 1
 #define computerPlaysForHuman false

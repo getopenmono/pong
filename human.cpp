@@ -12,13 +12,14 @@ Human::Human ()
 :
   View(Rect(0, 0, paddleLength, paddleWidth))
 {
+  lastPulses = 0;
+  setPosition(Point(0, screenWidth-paddleWidth-margin));
 }
 
 void Human::reset (int encoderPulses)
 {
   erase();
-  lastPulses = encoderPulses;
-  setPosition(Point(0, screenWidth-paddleWidth-margin));
+  // lastPulses = encoderPulses;
 }
 
 void Human::erase ()
@@ -76,8 +77,7 @@ void Human::followBall (uint16_t ballX)
 
 void Human::followEncoder (int encoderPulses)
 {
-  int const direction = encoderPulses - lastPulses;
-  lastPulses = encoderPulses;
+  int const direction = lastPulses - encoderPulses;
   int oldX = Position().X();
   int x = oldX + direction * pulsesPerPixel;
   if (x < 0)
@@ -90,6 +90,12 @@ void Human::followEncoder (int encoderPulses)
     setPosition(Point(x, Position().Y()));
     repaint();
   }
+  int diff = oldX - x;
+  if (diff > 10 || diff < -10)
+  {
+    // printf("X diff=%d direction=%d last=%d encoder=%d\r\n", diff, direction, lastPulses, encoderPulses);
+  }
+  lastPulses = encoderPulses;
 }
 
 void Human::tick (SharedState & state)

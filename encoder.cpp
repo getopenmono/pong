@@ -5,15 +5,17 @@
 
 Encoder::Encoder ()
 :
-  qei(J_RING1, J_RING2, NC, 24),
-  lastPulse(0)
+  qei(J_RING1, J_RING2, NC, 24)
 {
+  CyPins_SetPinDriveMode(J_RING1, CY_PINS_DM_RES_UP);
+  CyPins_SetPin(J_RING1);
+  CyPins_SetPinDriveMode(J_RING2, CY_PINS_DM_RES_UP);
+  CyPins_SetPin(J_RING2);
 }
 
 void Encoder::reset (int & sharedPulses)
 {
-  lastPulse = 0;
-  sharedPulses = 0;
+  sharedPulses = qei.getPulses();
 }
 
 void Encoder::tick (SharedState & state)
@@ -25,7 +27,7 @@ void Encoder::tick (SharedState & state)
     case SharedState::WaitingForHumanToReturnToCenter:
       break;
     case SharedState::ComputerToServe:
-      return;
+      break;
     case SharedState::GameOn:
       break;
     case SharedState::Sleep:
@@ -33,13 +35,9 @@ void Encoder::tick (SharedState & state)
     case SharedState::Crashed:
       return;
   }
-  randomMove(state.encoderPulses);
-}
-
-void Encoder::randomMove (int & sharedPulses)
-{
-  static int direction = 1;
-  sharedPulses += direction;
-  if (sharedPulses > screenHeight/2/pulsesPerPixel || sharedPulses < -screenHeight/2/pulsesPerPixel)
-    direction = -direction;
+  int pulses = qei.getPulses();
+  int diff = pulses - state.encoderPulses;
+  // if (diff > 10 || diff < -10)
+    // printf("diff=%d\r\n", diff);
+  state.encoderPulses = pulses;
 }

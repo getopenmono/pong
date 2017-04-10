@@ -69,6 +69,7 @@ void AppController::mainLoop ()
 
 void AppController::sendDebugInfo ()
 {
+  return;
   static SharedState oldState;
   if (oldState != state)
   {

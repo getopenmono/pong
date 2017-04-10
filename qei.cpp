@@ -133,7 +133,7 @@ QEI::QEI(PinName channelA,
          PinName index,
          int pulsesPerRev,
          Encoding encoding) : channelA_(channelA), channelB_(channelB),
-        index_(index) {
+         index_(index) {
 
     pulses_       = 0;
     revolutions_  = 0;
