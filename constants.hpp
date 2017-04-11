@@ -19,7 +19,7 @@ using mono::display::Color;
 #define black mono::display::BlackColor
 #define msResolution 1
 #define msInactivityTimeout 200000
-#define pulsesPerPixel 5
+#define pulsesPerPixel 3
 #define computerSpeed 1
 #define ballSpeed 1
 #define computerPlaysForHuman false

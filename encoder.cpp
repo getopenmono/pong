@@ -3,41 +3,62 @@
 #include "encoder.hpp"
 #include "constants.hpp"
 
-Encoder::Encoder ()
+Encoder::Encoder (PinName pinA, PinName pinB)
 :
-  qei(J_RING1, J_RING2, NC, 24)
+  lastA(0),
+  lastB(0),
+  channelA(pinA),
+  channelB(pinB)
 {
-  CyPins_SetPinDriveMode(J_RING1, CY_PINS_DM_RES_UP);
-  CyPins_SetPin(J_RING1);
-  CyPins_SetPinDriveMode(J_RING2, CY_PINS_DM_RES_UP);
-  CyPins_SetPin(J_RING2);
+  // Pull up A.
+  CyPins_SetPinDriveMode(pinA, CY_PINS_DM_RES_UP);
+  CyPins_SetPin(pinA);
+  // Pull up B.
+  CyPins_SetPinDriveMode(pinB, CY_PINS_DM_RES_UP);
+  CyPins_SetPin(pinB);
+  reset();
+  // Samples every 100µs.
+  ticker.attach_us(this, &Encoder::sample, 100);
 }
 
-void Encoder::reset (int & sharedPulses)
+void Encoder::reset ()
 {
-  sharedPulses = qei.getPulses();
+  pulses = 0;
 }
 
-void Encoder::tick (SharedState & state)
+int Encoder::getPulses ()
 {
-  switch (state.game)
+  return pulses;
+}
+
+void Encoder::sample ()
+{
+  uint8_t a = channelA.read();
+  uint8_t b = channelB.read();;
+  if (a != lastA || b != lastB)
   {
-    case SharedState::Reset:
-      return reset(state.encoderPulses);
-    case SharedState::WaitingForHumanToReturnToCenter:
-      break;
-    case SharedState::ComputerToServe:
-      break;
-    case SharedState::GameOn:
-      break;
-    case SharedState::Sleep:
-      return;
-    case SharedState::Crashed:
-      return;
+    encode(a, b);
+    lastA = a;
+    lastB = b;
   }
-  int pulses = qei.getPulses();
-  int diff = pulses - state.encoderPulses;
-  // if (diff > 10 || diff < -10)
-    // printf("diff=%d\r\n", diff);
-  state.encoderPulses = pulses;
+}
+
+void Encoder::encode (uint8_t a, uint8_t b)
+{
+  // 00 -> 01 -> 11 -> 10 -> ... = clockwise rotation.
+  if (
+    (lastA == 0 && lastB == 0 && a == 0 && b == 1) ||
+    (lastA == 0 && lastB == 1 && a == 1 && b == 1) ||
+    (lastA == 1 && lastB == 1 && a == 1 && b == 0) ||
+    (lastA == 1 && lastB == 0 && a == 0 && b == 0)
+  )
+    ++pulses;
+  // 01 -> 00 -> 10 -> 11 -> ... = counter clockwise rotation.
+  else if (
+    (lastA == 0 && lastB == 1 && a == 0 && b == 0) ||
+    (lastA == 0 && lastB == 0 && a == 1 && b == 0) ||
+    (lastA == 1 && lastB == 0 && a == 1 && b == 1) ||
+    (lastA == 1 && lastB == 1 && a == 0 && b == 1)
+  )
+    --pulses;
 }

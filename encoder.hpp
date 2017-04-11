@@ -3,18 +3,22 @@
 #ifndef pong_encoder_h
 #define pong_encoder_h
 #include <mono.h>
-#include "itickable.hpp"
-#include "qei.hpp"
+#include <mbed.h>
 
 class Encoder
-:
-  public ITickable
 {
-  QEI qei;
-  void reset (int&);
+  int pulses;
+  uint8 lastA;
+  uint8 lastB;
+  mbed::DigitalIn channelA;
+  mbed::DigitalIn channelB;
+  mbed::Ticker ticker;
+  void encode (uint8_t a, uint8_t b);
+  void sample ();
 public:
-  Encoder ();
-  virtual void tick (SharedState & state);
+  Encoder (PinName pinA, PinName pinB);
+  void reset ();
+  int getPulses ();
 };
 
 #endif // pong_encoder_h

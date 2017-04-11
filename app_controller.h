@@ -7,7 +7,7 @@
 #include "ball.hpp"
 #include "computer.hpp"
 #include "human.hpp"
-#include "encoder.hpp"
+#include "joystick.hpp"
 #include "score.hpp"
 #include "scheduler.hpp"
 
@@ -19,7 +19,7 @@ class AppController
   Scheduler scheduler;
   Ball ball;
   Human player;
-  Encoder joystick;
+  Joystick joystick;
   Computer computer;
   Score score;
   mono::Timer timer;
