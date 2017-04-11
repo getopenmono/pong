@@ -8,14 +8,13 @@ using mono::geo::Rect;
 
 Computer::Computer ()
 :
-  View(Rect(0, 0, paddleLength, paddleWidth))
+  View(Rect(100, margin, paddleLength, paddleWidth))
 {
 }
 
 void Computer::reset ()
 {
   erase();
-  setPosition(Point(100, margin));
 }
 
 void Computer::erase ()
@@ -83,6 +82,8 @@ void Computer::tick (SharedState & state)
     case SharedState::Crashed:
       return;
   }
+  if (state.msNow % 10 != 0)
+    return;
   followBall(state.ballX);
   state.computerHasBall = calculateHasBall(state.ballX, state.ballY);
   state.computerX = Position().X();

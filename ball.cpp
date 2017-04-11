@@ -148,6 +148,9 @@ void Ball::tick (SharedState & state)
     case SharedState::Crashed:
       return;
   }
+  if (state.msNow % 10 != 0)
+  return;
+
   Point corner = calculateNextPosition(state.computerX, state.humanX);
   if (corner.X() != Position().X() || corner.Y() != Position().Y())
     moveBallTo(corner, state.ballX, state.ballY);
