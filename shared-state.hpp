@@ -8,32 +8,25 @@ struct SharedState
 {
   enum Game
   {
-    Reset, // 0
-    WaitingForHumanToReturnToCenter, // 1
-    ComputerToServe, // 2
+    Intermission, // 0
+    ComputerServe, // 1
+    HumanServe, // 2
     GameOn, // 3
-    Sleep,
-    Crashed
+    UpdateScore, // 4
+    GameEnd // 5
   }
   game;
-  char const * crash;
-  int msNow;
-  int msBedTime;
-  int encoderPulses;
-  bool humanReady;
+  uint32_t msNow;
   uint16_t ballX;
-  uint16_t ballY;
   uint16_t computerX;
   uint16_t humanX;
-  bool computerHasBall;
-  bool computerMissedBall;
-  bool humanHasBall;
-  bool humanMissedBall;
+  bool computerMissed;
+  bool humanMissed;
+  int encoderPulses;
+  char const * crash;
 
   SharedState ();
-  bool operator == (SharedState const & rhs);
-  bool operator != (SharedState const & rhs);
-  void reset ();
+  void reset();
 };
 
 #endif // pong_shared_state_h

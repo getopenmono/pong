@@ -12,9 +12,17 @@ Computer::Computer ()
 {
 }
 
-void Computer::reset ()
+void Computer::tick (SharedState & state)
 {
-  erase();
+  if (state.msNow % computerSlowdown != 0)
+    return;
+  followBall(state.ballX);
+  state.computerX = Position().X();
+
+  if (Position().X() < 0)
+    state.crash = "computer x negative";
+  if (Position().X() + paddleLength > screenHeight)
+    state.crash = "computer x too high";
 }
 
 void Computer::erase ()
@@ -31,14 +39,14 @@ void Computer::repaint ()
 
 void Computer::followBall (uint16_t ballX)
 {
-  if (rng.random31b() % 3 == 0)
+  if (rng.random31b() % 2 == 0)
     return;
   int x = Position().X();
   int direction = ballX - (x + paddleLength/2);
   if (direction < 0)
-    x -= computerSpeed;
+    x -= 1;
   else if (direction > 0)
-    x += computerSpeed;
+    x += 1;
   if (x < 0)
     x = 0;
   else if (x > screenHeight - paddleLength)
@@ -61,35 +69,4 @@ bool Computer::calculateHasBall (uint16_t ballX, uint16_t ballY)
       return true;
   }
   return false;
-}
-
-void Computer::tick (SharedState & state)
-{
-  switch (state.game)
-  {
-    case SharedState::Reset:
-      reset();
-      repaint();
-      return;
-    case SharedState::WaitingForHumanToReturnToCenter:
-      return;
-    case SharedState::ComputerToServe:
-      break;
-    case SharedState::GameOn:
-      break;
-    case SharedState::Sleep:
-      return;
-    case SharedState::Crashed:
-      return;
-  }
-  if (state.msNow % 10 != 0)
-    return;
-  followBall(state.ballX);
-  state.computerHasBall = calculateHasBall(state.ballX, state.ballY);
-  state.computerX = Position().X();
-
-  if (Position().X() < 0)
-    state.crash = "computer x negative";
-  if (Position().X() + paddleLength > screenHeight)
-    state.crash = "computer x too high";
 }

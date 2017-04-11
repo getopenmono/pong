@@ -12,7 +12,6 @@ class Computer
   public mono::ui::View
 {
   Rng rng;
-  void reset ();
   void erase ();
   void followBall (uint16_t ballX);
   bool calculateHasBall (uint16_t ballX, uint16_t ballY);

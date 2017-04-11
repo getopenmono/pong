@@ -40,21 +40,4 @@ void Score::repaint ()
 
 void Score::tick (SharedState & state)
 {
-  switch (state.game)
-  {
-    case SharedState::Reset:
-      reset();
-      repaint();
-      break;
-    case SharedState::WaitingForHumanToReturnToCenter:
-      return;
-    case SharedState::ComputerToServe:
-      break;
-    case SharedState::GameOn:
-      break;
-    case SharedState::Sleep:
-      return;
-    case SharedState::Crashed:
-      return;
-  }
 }

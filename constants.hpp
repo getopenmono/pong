@@ -11,19 +11,19 @@ using mono::display::Color;
  * Values without units are number of pixels.
  */
 
+#define msResolution 1
+#define ballSlowdown 10
+#define computerSlowdown 7
 #define margin 3
 #define paddleWidth 5
 #define paddleLength 50
 #define radius 5
 #define green Color(0,63,0)
 #define black mono::display::BlackColor
-#define msResolution 1
-#define msInactivityTimeout 200000
 #define pulsesPerPixel 3
-#define computerSpeed 1
-#define ballSpeed 1
 #define computerPlaysForHuman false
 
+#define msInactivityTimeout 200000
 #define digitWidth 5
 
 #define screenWidth 220

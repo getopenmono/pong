@@ -14,11 +14,9 @@ class Ball
   int yDirection;
   void reset ();
   void erase ();
-  void moveBallTo (mono::geo::Point position, uint16_t & x, uint16_t & y);
+  void moveBallTo (mono::geo::Point position, uint16_t & x);
   mono::geo::Point effectuateDirection ();
   mono::geo::Point calculateNextPosition (uint16_t computerX, uint16_t humanX);
-  void computerReturnsBall ();
-  void humanReturnsBall ();
 public:
   Ball ();
   virtual void repaint ();

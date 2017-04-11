@@ -16,10 +16,23 @@ Human::Human ()
   setPosition(Point(0, screenWidth-paddleWidth-margin));
 }
 
+void Human::tick (SharedState & state)
+{
+  if (computerPlaysForHuman)
+    followBall(state.ballX);
+  else
+    followEncoder(state.encoderPulses);
+  state.humanX = Position().X();
+
+  if (Position().X() < 0)
+    state.crash = "human x negative";
+  if (Position().X() + paddleLength > screenHeight)
+    state.crash = "human x too high";
+}
+
 void Human::reset (int encoderPulses)
 {
   erase();
-  // lastPulses = encoderPulses;
 }
 
 void Human::erase ()
@@ -60,9 +73,9 @@ void Human::followBall (uint16_t ballX)
   int x = Position().X();
   int direction = ballX - (x + paddleLength/2);
   if (direction < 0)
-    x -= computerSpeed;
+    x -= 1;
   else if (direction > 0)
-    x += computerSpeed;
+    x += 1;
   if (x < 0)
     x = 0;
   else if (x > screenHeight - paddleLength)
@@ -90,43 +103,5 @@ void Human::followEncoder (int encoderPulses)
     setPosition(Point(x, Position().Y()));
     repaint();
   }
-  int diff = oldX - x;
-  if (diff > 10 || diff < -10)
-  {
-    // printf("X diff=%d direction=%d last=%d encoder=%d\r\n", diff, direction, lastPulses, encoderPulses);
-  }
   lastPulses = encoderPulses;
-}
-
-void Human::tick (SharedState & state)
-{
-  switch (state.game)
-  {
-    case SharedState::Reset:
-      reset(state.encoderPulses);
-      repaint();
-      return;
-    case SharedState::WaitingForHumanToReturnToCenter:
-      break;
-    case SharedState::ComputerToServe:
-      break;
-    case SharedState::GameOn:
-      break;
-    case SharedState::Sleep:
-      return;
-    case SharedState::Crashed:
-      return;
-  }
-  if (computerPlaysForHuman)
-    followBall(state.ballX);
-  else
-    followEncoder(state.encoderPulses);
-  state.humanReady = paddleCoversCenter();
-  state.humanHasBall = calculateHasBall(state.ballX, state.ballY);
-  state.humanX = Position().X();
-
-  if (Position().X() < 0)
-    state.crash = "human x negative";
-  if (Position().X() + paddleLength > screenHeight)
-    state.crash = "human x too high";
 }

@@ -10,16 +10,57 @@ Ball::Ball ()
 :
   View(Rect(0, 0, 2 * radius, 2 * radius))
 {
+  reset();
+  xDirection = 0;
+  yDirection = 0;
+}
+
+void Ball::tick (SharedState & state)
+{
+  switch (state.game)
+  {
+    case SharedState::Intermission:
+      return;
+    case SharedState::ComputerServe:
+      reset();
+      xDirection = 0;
+      yDirection = -1;
+      break;
+    case SharedState::HumanServe:
+      reset();
+      xDirection = 0;
+      yDirection = 1;
+      break;
+    case SharedState::GameOn:
+      break;
+    case SharedState::UpdateScore:
+      return;
+    case SharedState::GameEnd:
+      return;
+  }
+  if (state.msNow % ballSlowdown != 0)
+    return;
+  Point corner = calculateNextPosition(state.computerX, state.humanX);
+  if (corner.X() != Position().X() || corner.Y() != Position().Y())
+    moveBallTo(corner, state.ballX);
+  if (corner.Y() == 0)
+    state.computerMissed = true;
+  else if (corner.Y() == screenWidth - 2 * radius)
+    state.humanMissed = true;
+
+  if (Position().X() < 0)
+    state.crash = "ball x negative";
+  if (Position().X() + 2 * radius > screenHeight)
+    state.crash = "ball x too high";
+  if (Position().Y() < 0)
+    state.crash = "ball y negative";
+  if (Position().Y() + 2 * radius > screenWidth)
+    state.crash = "ball y too high";
 }
 
 void Ball::reset ()
 {
-  erase();
-  uint16_t x = screenHeight/2;
-  uint16_t y = screenWidth/2;
-  setPosition(Point(x - radius, y - radius));
-  xDirection = 0;
-  yDirection = 0;
+  setPosition(Point(screenHeight/2 - radius, screenWidth/2 - radius));
 }
 
 void Ball::erase ()
@@ -34,25 +75,12 @@ void Ball::repaint ()
   painter.drawFillRect(ViewRect().X(), ViewRect().Y(), radius * 2, radius * 2);
 }
 
-void Ball::moveBallTo (Point position, uint16_t & x, uint16_t & y)
+void Ball::moveBallTo (Point position, uint16_t & x)
 {
   erase();
   setPosition(position);
   repaint();
   x = position.X();
-  y = position.Y();
-}
-
-void Ball::computerReturnsBall ()
-{
-  yDirection = ballSpeed;
-  xDirection = -ballSpeed;
-}
-
-void Ball::humanReturnsBall ()
-{
-  yDirection = -ballSpeed;
-  xDirection = ballSpeed;
 }
 
 Point Ball::calculateNextPosition (uint16_t computerX, uint16_t humanX)
@@ -68,19 +96,18 @@ Point Ball::calculateNextPosition (uint16_t computerX, uint16_t humanX)
     if (xCenter > computerX && xCenter < computerX + paddleLength)
     {
       // Bounce back.
-      yDirection = ballSpeed;
+      yDirection = 1;
       // At an angle proportional to distance to center of paddle.
       if (x < computerX)
-        xDirection = -2 * ballSpeed;
+        xDirection = -2;
       else if (xCenter + radius > computerX + paddleLength)
-        xDirection = 2 * ballSpeed;
+        xDirection = 2;
       else if (xCenter < computerX + paddleLength / 4)
-        xDirection = -ballSpeed;
+        xDirection = -1;
       else if (xCenter > computerX + paddleLength / 2 + paddleLength / 4)
-        xDirection = ballSpeed;
+        xDirection = 1;
       else
         xDirection = 0;
-      // printf("Top %d vs %d, xDirection = %d\r\n", xCenter, computerX, xDirection);
     }
   }
   // Human hit?
@@ -90,19 +117,18 @@ Point Ball::calculateNextPosition (uint16_t computerX, uint16_t humanX)
     if (xCenter > humanX && xCenter < humanX + paddleLength)
     {
       // Bounce back.
-      yDirection = -ballSpeed;
+      yDirection = -1;
       // At an angle proportional to distance to center of paddle.
       if (x < humanX)
-        xDirection = -2 * ballSpeed;
+        xDirection = -2;
       else if (xCenter + radius > humanX + paddleLength)
-        xDirection = 2 * ballSpeed;
+        xDirection = 2;
       else if (x < humanX + paddleLength / 3)
-        xDirection = -ballSpeed;
+        xDirection = -1;
       else if (xCenter + radius > humanX + paddleLength / 3 + paddleLength / 3)
-        xDirection = ballSpeed;
+        xDirection = 1;
       else
         xDirection = 0;
-      // printf("Bottom %d vs %d, xDirection = %d\r\n", xCenter, humanX, xDirection);
     }
   }
   return effectuateDirection();
@@ -114,57 +140,16 @@ Point Ball::effectuateDirection ()
   int y = Position().Y() + yDirection;
   if (x <= 0)
   {
-    xDirection = ballSpeed;
+    xDirection = 1;
     if (x < 0)
       x = -x;
   }
   else if (x + 2 * radius >= screenHeight)
   {
-    xDirection = -ballSpeed;
+    xDirection = -1;
     if (x  + 2 * radius > screenHeight)
       x = screenHeight-x;
   }
   return Point(x, y);
 }
 
-void Ball::tick (SharedState & state)
-{
-  switch (state.game)
-  {
-    case SharedState::Reset:
-      reset();
-      repaint();
-      break;
-    case SharedState::WaitingForHumanToReturnToCenter:
-      return;
-    case SharedState::ComputerToServe:
-      xDirection = 0;
-      yDirection = -ballSpeed;
-      break;
-    case SharedState::GameOn:
-      break;
-    case SharedState::Sleep:
-      return;
-    case SharedState::Crashed:
-      return;
-  }
-  if (state.msNow % 10 != 0)
-  return;
-
-  Point corner = calculateNextPosition(state.computerX, state.humanX);
-  if (corner.X() != Position().X() || corner.Y() != Position().Y())
-    moveBallTo(corner, state.ballX, state.ballY);
-  if (corner.Y() == 0)
-    state.computerMissedBall = true;
-  else if (corner.Y() == screenWidth - 2 * radius)
-    state.humanMissedBall = true;
-
-  if (Position().X() < 0)
-    state.crash = "ball x negative";
-  if (Position().X() + 2 * radius > screenHeight)
-    state.crash = "ball x too high";
-  if (Position().Y() < 0)
-    state.crash = "ball y negative";
-  if (Position().Y() + 2 * radius > screenWidth)
-    state.crash = "ball y too high";
-}

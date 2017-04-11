@@ -9,28 +9,7 @@ Joystick::Joystick ()
 {
 }
 
-void Joystick::reset (int & sharedPulses)
-{
-  sharedPulses = encoder.getPulses();
-}
-
 void Joystick::tick (SharedState & state)
 {
-  switch (state.game)
-  {
-    case SharedState::Reset:
-      return reset(state.encoderPulses);
-    case SharedState::WaitingForHumanToReturnToCenter:
-      break;
-    case SharedState::ComputerToServe:
-      break;
-    case SharedState::GameOn:
-      break;
-    case SharedState::Sleep:
-      return;
-    case SharedState::Crashed:
-      return;
-  }
-  int pulses = encoder.getPulses();
-  state.encoderPulses = pulses;
+  state.encoderPulses = encoder.getPulses();
 }
