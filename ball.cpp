@@ -10,43 +10,62 @@ Ball::Ball ()
 :
   View(Rect(0, 0, 2 * radius, 2 * radius))
 {
-  reset();
-  xDirection = 0;
-  yDirection = 0;
 }
 
 void Ball::tick (SharedState & state)
 {
   switch (state.game)
   {
-    case SharedState::Intermission:
+    case SharedState::Init:
+      moveBallTo(Point(screenHeight/2 - radius, screenWidth/2 - radius), state.ballX);
+      xDirection = 0;
+      yDirection = 0;
       return;
     case SharedState::ComputerServe:
-      reset();
+      moveBallTo(Point(screenHeight/2 - radius, screenWidth/2 - radius), state.ballX);
       xDirection = 0;
       yDirection = -1;
-      break;
+      state.nextGameState = SharedState::GameOn;
+      return;
     case SharedState::HumanServe:
-      reset();
+      moveBallTo(Point(screenHeight/2 - radius, screenWidth/2 - radius), state.ballX);
       xDirection = 0;
       yDirection = 1;
-      break;
+      state.nextGameState = SharedState::GameOn;
+      stepBall(state);
+      return;
     case SharedState::GameOn:
-      break;
-    case SharedState::UpdateScore:
+      stepBall(state);
+      return;
+    case SharedState::ComputerMissed:
+      moveBallTo(Point(screenHeight/2 - radius, screenWidth/2 - radius), state.ballX);
+      xDirection = 0;
+      yDirection = 0;
+      return;
+    case SharedState::HumanMissed:
+      moveBallTo(Point(screenHeight/2 - radius, screenWidth/2 - radius), state.ballX);
+      xDirection = 0;
+      yDirection = 0;
+      return;
+    case SharedState::Intermission:
+      stepBall(state);
       return;
     case SharedState::GameEnd:
       return;
   }
+}
+
+void Ball::stepBall (SharedState & state)
+{
   if (state.msNow % ballSlowdown != 0)
     return;
   Point corner = calculateNextPosition(state.computerX, state.humanX);
   if (corner.X() != Position().X() || corner.Y() != Position().Y())
     moveBallTo(corner, state.ballX);
   if (corner.Y() == 0)
-    state.computerMissed = true;
+    state.nextGameState = SharedState::ComputerMissed;
   else if (corner.Y() == screenWidth - 2 * radius)
-    state.humanMissed = true;
+    state.nextGameState = SharedState::HumanMissed;
 
   if (Position().X() < 0)
     state.crash = "ball x negative";
@@ -56,11 +75,6 @@ void Ball::tick (SharedState & state)
     state.crash = "ball y negative";
   if (Position().Y() + 2 * radius > screenWidth)
     state.crash = "ball y too high";
-}
-
-void Ball::reset ()
-{
-  setPosition(Point(screenHeight/2 - radius, screenWidth/2 - radius));
 }
 
 void Ball::erase ()

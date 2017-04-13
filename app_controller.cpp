@@ -25,13 +25,31 @@ void AppController::resetGame ()
 
 void AppController::mainLoop ()
 {
+  state.msNow += msResolution;
+  // Testing delay.
+  if (state.msNow < 1000)
+    return;
   sendDebugInfo();
   scheduler.run(state);
-  state.msNow += msResolution;
 }
 
 void AppController::sendDebugInfo ()
 {
+  static SharedState lastState;
+  if (state != lastState)
+  {
+    debugLine(String::Format(
+      "game=%d, next=%d, ball=%d, computer=%d, human=%d, encoder=%d %s",
+      state.game,
+      state.nextGameState,
+      state.ballX,
+      state.computerX,
+      state.humanX,
+      state.encoderPulses,
+      state.crash
+    ));
+    lastState = state;
+  }
   if (state.crash != 0)
   {
     debugLine(state.crash);

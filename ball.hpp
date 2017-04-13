@@ -15,6 +15,7 @@ class Ball
   void reset ();
   void erase ();
   void moveBallTo (mono::geo::Point position, uint16_t & x);
+  void stepBall (SharedState & state);
   mono::geo::Point effectuateDirection ();
   mono::geo::Point calculateNextPosition (uint16_t computerX, uint16_t humanX);
 public:

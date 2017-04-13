@@ -19,7 +19,12 @@ Human::Human ()
 void Human::tick (SharedState & state)
 {
   if (computerPlaysForHuman)
-    followBall(state.ballX);
+  {
+    if (state.game == SharedState::Intermission)
+      return;
+    if (state.msNow % computerSlowdown == 0)
+      followBall(state.ballX);
+  }
   else
     followEncoder(state.encoderPulses);
   state.humanX = Position().X();

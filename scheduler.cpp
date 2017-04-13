@@ -13,6 +13,7 @@ void Scheduler::add (ITickable * tickable)
 
 void Scheduler::run (SharedState & state)
 {
+  state.game = state.nextGameState;
   for (std::vector<ITickable*>::iterator i = tickables.begin(); i != tickables.end(); ++i)
   {
     (*i)->tick(state);

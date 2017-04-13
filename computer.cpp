@@ -14,6 +14,8 @@ Computer::Computer ()
 
 void Computer::tick (SharedState & state)
 {
+  if (state.game == SharedState::Intermission)
+    return;
   if (state.msNow % computerSlowdown != 0)
     return;
   followBall(state.ballX);
@@ -39,7 +41,7 @@ void Computer::repaint ()
 
 void Computer::followBall (uint16_t ballX)
 {
-  if (rng.random31b() % 2 == 0)
+  if (rng.random31b() % 3 == 0)
     return;
   int x = Position().X();
   int direction = ballX - (x + paddleLength/2);

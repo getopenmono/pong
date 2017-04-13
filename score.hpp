@@ -12,8 +12,10 @@ class Score
 {
   uint8_t computer;
   uint8_t human;
-  void reset ();
+  bool humanToServe;
+  uint32_t msEndOfIntermission;
   void erase ();
+  void setupIntermission (SharedState & state);
 public:
   Score ();
   virtual void repaint ();

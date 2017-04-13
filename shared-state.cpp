@@ -10,12 +10,26 @@ SharedState::SharedState ()
 
 void SharedState::reset ()
 {
-  game = Intermission;
+  game = Init;
+  nextGameState = game;
   msNow = 0;
   computerX = 0;
   humanX = 0;
-  computerMissed = false;
-  humanMissed = false;
+  ballX = 0;
   encoderPulses = 0;
   crash = 0;
+}
+
+bool SharedState::operator == (SharedState const & rhs) const
+{
+  if (game != rhs.game) return false;
+  if (nextGameState != rhs.nextGameState) return false;
+  if (encoderPulses != rhs.encoderPulses) return false;
+  if (crash != rhs.crash) return false;
+  return true;
+}
+
+bool SharedState::operator != (SharedState const & rhs) const
+{
+  return ! ((*this) == rhs);
 }
