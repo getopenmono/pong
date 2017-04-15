@@ -11,10 +11,10 @@ using mono::display::Color;
  * Values without units are number of pixels.
  */
 
-#define computerPlaysForHuman true
+#define computerPlaysForHuman false
 #define msResolution 1
 #define ballSlowdown 10
-#define computerSlowdown 10
+#define computerSlowdown 8
 #define margin 3
 #define paddleWidth 5
 #define paddleLength 50

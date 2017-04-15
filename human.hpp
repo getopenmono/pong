@@ -12,16 +12,14 @@ class Human
   public mono::ui::View
 {
   Rng rng;
-  void reset (int encoderPulses);
   void erase ();
-  bool paddleCoversCenter ();
-  bool calculateHasBall (uint16_t ballX, uint16_t ballY);
   void followEncoder (int encoderPulses);
   void followBall (uint16_t ballX);
   int lastPulses;
 public:
   Human ();
   virtual void repaint ();
+  virtual char const * getName () const { return "Human"; };
   virtual void tick (SharedState & state);
 };
 

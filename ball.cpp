@@ -154,16 +154,15 @@ Point Ball::effectuateDirection ()
   int y = Position().Y() + yDirection;
   if (x <= 0)
   {
-    xDirection = 1;
+    xDirection = -xDirection;
     if (x < 0)
       x = -x;
   }
-  else if (x + 2 * radius >= screenHeight)
+  else if (x + 2*radius >= screenHeight)
   {
-    xDirection = -1;
-    if (x  + 2 * radius > screenHeight)
-      x = screenHeight-x;
+    xDirection = -xDirection;
+    if (x + 2*radius >= screenHeight)
+      x = 2*(screenHeight - 2*radius) - x;
   }
   return Point(x, y);
 }
-

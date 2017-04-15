@@ -10,7 +10,7 @@ using mono::display::Color;
 
 Human::Human ()
 :
-  View(Rect(0, 0, paddleLength, paddleWidth))
+  View(Rect(10, 0, paddleLength, paddleWidth))
 {
   lastPulses = 0;
   setPosition(Point(0, screenWidth-paddleWidth-margin));
@@ -26,18 +26,15 @@ void Human::tick (SharedState & state)
       followBall(state.ballX);
   }
   else
+  {
     followEncoder(state.encoderPulses);
+  }
   state.humanX = Position().X();
 
   if (Position().X() < 0)
     state.crash = "human x negative";
   if (Position().X() + paddleLength > screenHeight)
     state.crash = "human x too high";
-}
-
-void Human::reset (int encoderPulses)
-{
-  erase();
 }
 
 void Human::erase ()
@@ -50,25 +47,6 @@ void Human::repaint ()
 {
   painter.setBackgroundColor(green);
   painter.drawFillRect(ViewRect(), true);
-}
-
-bool Human::paddleCoversCenter ()
-{
-  uint16_t x = Position().X();
-  uint16_t middle = screenHeight / 2;
-  return (x < middle && x + paddleLength > middle);
-}
-
-bool Human::calculateHasBall (uint16_t ballX, uint16_t ballY)
-{
-  int y = Position().Y();
-  if (y <= ballY + 2 * radius)
-  {
-    int x = Position().X();
-    if (x <= ballX && (ballX + 2 * radius) <= (x + paddleLength))
-      return true;
-  }
-  return false;
 }
 
 void Human::followBall (uint16_t ballX)

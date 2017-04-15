@@ -11,5 +11,9 @@ Joystick::Joystick ()
 
 void Joystick::tick (SharedState & state)
 {
-  state.encoderPulses = encoder.getPulses();
+  int pulses = encoder.getPulses();
+  if (pulses != state.encoderPulses)
+  {
+    state.encoderPulses = pulses;
+  }
 }

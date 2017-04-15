@@ -18,6 +18,7 @@ class Computer
 public:
   Computer ();
   virtual void repaint ();
+  virtual char const * getName () const { return "Computer"; };
   virtual void tick (SharedState & state);
 };
 

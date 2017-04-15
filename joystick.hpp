@@ -11,9 +11,9 @@ class Joystick
   public ITickable
 {
   Encoder encoder;
-  void reset (int&);
 public:
   Joystick ();
+  virtual char const * getName () const { return "Joystick"; };
   virtual void tick (SharedState & state);
 };
 

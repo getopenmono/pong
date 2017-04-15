@@ -37,28 +37,32 @@ void Encoder::sample ()
   uint8_t b = channelB.read();;
   if (a != lastA || b != lastB)
   {
-    encode(a, b);
+    translate(a, b);
     lastA = a;
     lastB = b;
   }
 }
 
-void Encoder::encode (uint8_t a, uint8_t b)
+void Encoder::translate (uint8_t a, uint8_t b)
 {
   // 00 -> 01 -> 11 -> 10 -> ... = clockwise rotation.
   if (
-    (lastA == 0 && lastB == 0 && a == 0 && b == 1) ||
-    (lastA == 0 && lastB == 1 && a == 1 && b == 1) ||
-    (lastA == 1 && lastB == 1 && a == 1 && b == 0) ||
-    (lastA == 1 && lastB == 0 && a == 0 && b == 0)
+    (lastA == 0 && lastB == 0 && a == 0 && b >= 1) ||
+    (lastA == 0 && lastB >= 1 && a >= 1 && b >= 1) ||
+    (lastA >= 1 && lastB >= 1 && a >= 1 && b == 0) ||
+    (lastA >= 1 && lastB == 0 && a == 0 && b == 0)
   )
+  {
     ++pulses;
+  }
   // 01 -> 00 -> 10 -> 11 -> ... = counter clockwise rotation.
   else if (
-    (lastA == 0 && lastB == 1 && a == 0 && b == 0) ||
-    (lastA == 0 && lastB == 0 && a == 1 && b == 0) ||
-    (lastA == 1 && lastB == 0 && a == 1 && b == 1) ||
-    (lastA == 1 && lastB == 1 && a == 0 && b == 1)
+    (lastA == 0 && lastB >= 1 && a == 0 && b == 0) ||
+    (lastA == 0 && lastB == 0 && a >= 1 && b == 0) ||
+    (lastA >= 1 && lastB == 0 && a >= 1 && b >= 1) ||
+    (lastA >= 1 && lastB >= 1 && a == 0 && b >= 1)
   )
+  {
     --pulses;
+  }
 }

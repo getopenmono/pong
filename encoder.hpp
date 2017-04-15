@@ -13,7 +13,7 @@ class Encoder
   mbed::DigitalIn channelA;
   mbed::DigitalIn channelB;
   mbed::Ticker ticker;
-  void encode (uint8_t a, uint8_t b);
+  void translate (uint8_t a, uint8_t b);
   void sample ();
 public:
   Encoder (PinName pinA, PinName pinB);

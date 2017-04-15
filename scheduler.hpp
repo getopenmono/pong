@@ -2,6 +2,7 @@
 // Released under the MIT license, see LICENSE.txt
 #ifndef pong_scheduler_h
 #define pong_scheduler_h
+#include <mono.h>
 #include <vector>
 #include "shared-state.hpp"
 #include "itickable.hpp"
@@ -16,8 +17,8 @@ class Scheduler
   std::vector<ITickable*> tickables;
 public:
   Scheduler ();
-  void add (ITickable * tickable);
-  void run (SharedState & state);
+  void add (ITickable *);
+  void run (SharedState &);
 };
 
 #endif // pong_scheduler_h

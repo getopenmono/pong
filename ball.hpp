@@ -21,6 +21,7 @@ class Ball
 public:
   Ball ();
   virtual void repaint ();
+  virtual char const * getName () const { return "Ball"; };
   virtual void tick (SharedState & state);
 };
 

@@ -44,7 +44,7 @@ void Computer::followBall (uint16_t ballX)
   if (rng.random31b() % 3 == 0)
     return;
   int x = Position().X();
-  int direction = ballX - (x + paddleLength/2);
+  int direction = (ballX - 4 + rng.random31b() % 8) - (x + paddleLength/2);
   if (direction < 0)
     x -= 1;
   else if (direction > 0)

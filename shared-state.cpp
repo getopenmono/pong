@@ -24,7 +24,7 @@ bool SharedState::operator == (SharedState const & rhs) const
 {
   if (game != rhs.game) return false;
   if (nextGameState != rhs.nextGameState) return false;
-  if (encoderPulses != rhs.encoderPulses) return false;
+  //if (encoderPulses != rhs.encoderPulses) return false;
   if (crash != rhs.crash) return false;
   return true;
 }
