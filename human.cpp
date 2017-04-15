@@ -10,9 +10,9 @@ using mono::display::Color;
 
 Human::Human ()
 :
-  View(Rect(10, 0, paddleLength, paddleWidth))
+  View(Rect(0, 0, paddleLength, paddleWidth))
 {
-  lastPulses = 0;
+  lastPulses = 1;
   setPosition(Point(0, screenWidth-paddleWidth-margin));
 }
 

@@ -26,9 +26,6 @@ void AppController::resetGame ()
 void AppController::mainLoop ()
 {
   state.msNow += msResolution;
-  // Testing delay.
-  if (state.msNow < 1000)
-    return;
   sendDebugInfo();
   scheduler.run(state);
 }

@@ -16,6 +16,8 @@ class Score
   uint32_t msEndOfIntermission;
   void erase ();
   void setupIntermission (SharedState & state);
+  void eraseDigit (uint16_t yDisplacement);
+  void drawDigit (uint8_t digit, uint16_t yDisplacement);
 public:
   Score ();
   virtual void repaint ();

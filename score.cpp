@@ -55,21 +55,97 @@ void Score::tick (SharedState & state)
 void Score::setupIntermission (SharedState & state)
 {
   msEndOfIntermission = state.msNow + msIntermission;
-  state.nextGameState = SharedState::Intermission;
   repaint();
+  if (human >= 9 || computer >= 9)
+    state.nextGameState = SharedState::GameEnd;
+  else
+    state.nextGameState = SharedState::Intermission;
 }
 
 void Score::erase ()
 {
   printf("NEXT BALL\r\n");
+  eraseDigit(0);
+  eraseDigit(9);
 }
 
 void Score::repaint ()
 {
   printf("HUMAN %d -- COMPUTER %d\r\n", human, computer);
-  /*
-  painter.setForegroundColor(green);
-  painter.drawFillRect(ViewRect().X(), ViewRect().Y(), 5 * digitWidth, 3 * digitWidth);
-  painter.drawFillRect(ViewRect().X(), ViewRect().Y() + 9 * digitWidth, 5 * digitWidth, 3 * digitWidth);
-  */
+  drawDigit(computer, 0);
+  drawDigit(human, 9);
 }
+
+void Score::drawDigit (uint8_t digit, uint16_t yDisplacement)
+{
+  painter.setForegroundColor(green);
+  if (digit == 0)
+  {
+    painter.drawFillRect(ViewRect().X(), ViewRect().Y() + yDisplacement * digitWidth, 5 * digitWidth, 3 * digitWidth);
+    painter.setForegroundColor(black);
+    painter.drawFillRect(ViewRect().X() + digitWidth, ViewRect().Y() + (yDisplacement+1) * digitWidth, 3 * digitWidth, digitWidth);
+  }
+  else if (digit == 1)
+    painter.drawFillRect(ViewRect().X(), ViewRect().Y() + (yDisplacement+1) * digitWidth, 5 * digitWidth, digitWidth);
+  else if (digit == 2)
+  {
+    painter.drawFillRect(ViewRect().X(), ViewRect().Y() + yDisplacement * digitWidth, 5 * digitWidth, 3 * digitWidth);
+    painter.setForegroundColor(black);
+    painter.drawFillRect(ViewRect().X() + 3*digitWidth, ViewRect().Y() + yDisplacement * digitWidth, digitWidth, 2 * digitWidth);
+    painter.drawFillRect(ViewRect().X() + digitWidth, ViewRect().Y() + (yDisplacement+1) * digitWidth, digitWidth, 2 * digitWidth);
+  }
+  else if (digit == 3)
+  {
+    painter.drawFillRect(ViewRect().X(), ViewRect().Y() + yDisplacement * digitWidth, 5 * digitWidth, 3 * digitWidth);
+    painter.setForegroundColor(black);
+    painter.drawFillRect(ViewRect().X() + 3*digitWidth, ViewRect().Y() + yDisplacement * digitWidth, digitWidth, 2 * digitWidth);
+    painter.drawFillRect(ViewRect().X() + digitWidth, ViewRect().Y() + yDisplacement * digitWidth, digitWidth, 2 * digitWidth);
+  }
+  else if (digit == 4)
+  {
+    painter.drawFillRect(ViewRect().X(), ViewRect().Y() + yDisplacement * digitWidth, 5 * digitWidth, 3 * digitWidth);
+    painter.setForegroundColor(black);
+    painter.drawFillRect(ViewRect().X() + 3*digitWidth, ViewRect().Y() + (yDisplacement+1) * digitWidth, 2 * digitWidth, digitWidth);
+    painter.drawFillRect(ViewRect().X(), ViewRect().Y() + yDisplacement * digitWidth, 2 * digitWidth, 2 * digitWidth);
+  }
+  else if (digit == 5)
+  {
+    painter.drawFillRect(ViewRect().X(), ViewRect().Y() + yDisplacement * digitWidth, 5 * digitWidth, 3 * digitWidth);
+    painter.setForegroundColor(black);
+    painter.drawFillRect(ViewRect().X() + 3*digitWidth, ViewRect().Y() + (yDisplacement+1) * digitWidth, digitWidth, 2 * digitWidth);
+    painter.drawFillRect(ViewRect().X() + digitWidth, ViewRect().Y() + yDisplacement * digitWidth, digitWidth, 2 * digitWidth);
+  }
+  else if (digit == 6)
+  {
+    painter.drawFillRect(ViewRect().X(), ViewRect().Y() + yDisplacement * digitWidth, 5 * digitWidth, 3 * digitWidth);
+    painter.setForegroundColor(black);
+    painter.drawFillRect(ViewRect().X() + 3*digitWidth, ViewRect().Y() + (yDisplacement+1) * digitWidth, digitWidth, 2 * digitWidth);
+    painter.drawFillRect(ViewRect().X() + digitWidth, ViewRect().Y() + (yDisplacement+1) * digitWidth, digitWidth, digitWidth);
+  }
+  else if (digit == 7)
+  {
+    painter.drawFillRect(ViewRect().X() + 4*digitWidth, ViewRect().Y() + yDisplacement * digitWidth, digitWidth, 3 * digitWidth);
+    painter.drawFillRect(ViewRect().X(), ViewRect().Y() + (yDisplacement+2) * digitWidth, 4 * digitWidth, digitWidth);
+  }
+  else if (digit == 8)
+  {
+    painter.drawFillRect(ViewRect().X(), ViewRect().Y() + yDisplacement * digitWidth, 5 * digitWidth, 3 * digitWidth);
+    painter.setForegroundColor(black);
+    painter.drawFillRect(ViewRect().X() + 3*digitWidth, ViewRect().Y() + (yDisplacement+1) * digitWidth, digitWidth, digitWidth);
+    painter.drawFillRect(ViewRect().X() + digitWidth, ViewRect().Y() + (yDisplacement+1) * digitWidth, digitWidth, digitWidth);
+  }
+  else if (digit == 9)
+  {
+    painter.drawFillRect(ViewRect().X(), ViewRect().Y() + yDisplacement * digitWidth, 5 * digitWidth, 3 * digitWidth);
+    painter.setForegroundColor(black);
+    painter.drawFillRect(ViewRect().X() + 3*digitWidth, ViewRect().Y() + (yDisplacement+1) * digitWidth, digitWidth, digitWidth);
+    painter.drawFillRect(ViewRect().X(), ViewRect().Y() + yDisplacement * digitWidth, 2 * digitWidth, 2 * digitWidth);
+  }
+}
+
+void Score::eraseDigit (uint16_t yDisplacement)
+{
+  painter.setForegroundColor(black);
+  painter.drawFillRect(ViewRect().X(), ViewRect().Y() + yDisplacement * digitWidth, 5 * digitWidth, 3 * digitWidth);
+}
+
