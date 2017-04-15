@@ -28,6 +28,11 @@ void AppController::mainLoop ()
   state.msNow += msResolution;
   sendDebugInfo();
   scheduler.run(state);
+  if (state.game == SharedState::GameEnd)
+  {
+    if (state.humanX == 0 || state.humanX + paddleLength == screenHeight)
+      state.nextGameState = SharedState::Init;
+  }
 }
 
 void AppController::sendDebugInfo ()
