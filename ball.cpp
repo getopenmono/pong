@@ -33,7 +33,7 @@ void Ball::tick (SharedState & state)
       xDirection = 0;
       yDirection = 1;
       state.nextGameState = SharedState::GameOn;
-      stepBall(state);
+      //stepBall(state);
       return;
     case SharedState::GameOn:
       stepBall(state);
