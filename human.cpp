@@ -18,6 +18,8 @@ Human::Human ()
 
 void Human::tick (SharedState & state)
 {
+  if (state.game == SharedState::Init)
+    return repaint();
   if (computerPlaysForHuman)
   {
     if (state.game == SharedState::Intermission)

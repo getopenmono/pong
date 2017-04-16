@@ -16,6 +16,8 @@ void Computer::tick (SharedState & state)
 {
   if (state.game == SharedState::GameEnd)
     return;
+  if (state.game == SharedState::Init)
+    return repaint();
   if (state.game == SharedState::Intermission)
     return;
   if (state.msNow % computerSlowdown != 0)
