@@ -8,7 +8,8 @@ using mono::geo::Rect;
 
 Ball::Ball ()
 :
-  View(Rect(0, 0, 2 * radius, 2 * radius))
+  View(Rect(0, 0, 2 * radius, 2 * radius)),
+  buzzer(*mono::IApplicationContext::Instance->Buzzer)
 {
 }
 
@@ -63,9 +64,15 @@ void Ball::stepBall (SharedState & state)
   if (corner.X() != Position().X() || corner.Y() != Position().Y())
     moveBallTo(corner, state.ballX);
   if (corner.Y() == 0)
+  {
     state.nextGameState = SharedState::ComputerMissed;
+    buzzer.buzzAsync(2);
+  }
   else if (corner.Y() == screenWidth - 2 * radius)
+  {
     state.nextGameState = SharedState::HumanMissed;
+    buzzer.buzzAsync(2);
+  }
 
   if (Position().X() < 0)
     state.crash = "ball x negative";
@@ -109,6 +116,7 @@ Point Ball::calculateNextPosition (uint16_t computerX, uint16_t humanX)
     // Half of ball must be on paddle for hit.
     if (xCenter > computerX && xCenter < computerX + paddleLength)
     {
+      buzzer.buzzAsync(1);
       // Bounce back.
       yDirection = 1;
       // At an angle proportional to distance to center of paddle.
@@ -130,6 +138,7 @@ Point Ball::calculateNextPosition (uint16_t computerX, uint16_t humanX)
     // Half of ball must be on paddle for hit.
     if (xCenter > humanX && xCenter < humanX + paddleLength)
     {
+      buzzer.buzzAsync(1);
       // Bounce back.
       yDirection = -1;
       // At an angle proportional to distance to center of paddle.
@@ -154,12 +163,14 @@ Point Ball::effectuateDirection ()
   int y = Position().Y() + yDirection;
   if (x <= 0)
   {
+    buzzer.buzzAsync(1);
     xDirection = -xDirection;
     if (x < 0)
       x = -x;
   }
   else if (x + 2*radius >= screenHeight)
   {
+    buzzer.buzzAsync(1);
     xDirection = -xDirection;
     if (x + 2*radius >= screenHeight)
       x = 2*(screenHeight - 2*radius) - x;

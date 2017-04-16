@@ -12,6 +12,7 @@ class Ball
 {
   int xDirection;
   int yDirection;
+  mono::sensor::IBuzzer & buzzer;
   void reset ();
   void erase ();
   void moveBallTo (mono::geo::Point position, uint16_t & x);

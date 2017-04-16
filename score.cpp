@@ -65,14 +65,12 @@ void Score::setupIntermission (SharedState & state)
 
 void Score::erase ()
 {
-  printf("NEXT BALL\r\n");
   eraseDigit(0);
   eraseDigit(13);
 }
 
 void Score::repaint ()
 {
-  printf("HUMAN %d -- COMPUTER %d\r\n", human, computer);
   drawDigit(computer, 0);
   drawDigit(human, 13);
 }
