@@ -7,7 +7,8 @@ using mono::String;
 
 AppController::AppController ()
 :
-  timer(msResolution)
+  timer(msResolution),
+  msGoToBed(msInactivityTimeout)
 {
   scheduler.add(&ball);
   scheduler.add(&player);
@@ -28,6 +29,14 @@ void AppController::mainLoop ()
   state.msNow += msResolution;
   sendDebugInfo();
   scheduler.run(state);
+  if (state.game == SharedState::Intermission)
+  {
+    msGoToBed = state.msNow + msInactivityTimeout;
+  }
+  else if (state.msNow >= msGoToBed)
+  {
+    mono::IApplicationContext::EnterSleepMode();
+  }
   if (state.game == SharedState::GameEnd)
   {
     if (state.humanX == 0 || state.humanX + paddleLength == screenHeight)

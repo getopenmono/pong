@@ -23,6 +23,7 @@ class AppController
   Computer computer;
   Score score;
   mono::Timer timer;
+  uint32_t msGoToBed;
   void resetGame ();
   void mainLoop ();
   void sendDebugInfo ();

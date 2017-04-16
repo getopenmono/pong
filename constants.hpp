@@ -23,9 +23,10 @@ using mono::display::Color;
 #define black mono::display::BlackColor
 #define pulsesPerPixel 3
 #define msIntermission 2000
-
-#define msInactivityTimeout 200000
+#define msInactivityTimeout 60000
 #define digitWidth 5
+
+// Hardware constants.
 
 #define screenWidth 220
 #define screenHeight 176
