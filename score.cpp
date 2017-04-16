@@ -3,6 +3,7 @@
 #include <mono.h>
 #include "score.hpp"
 #include "constants.hpp"
+#define DW digitWidth
 
 using mono::geo::Point;
 using mono::geo::Rect;
@@ -10,10 +11,10 @@ using mono::geo::Rect;
 Score::Score ()
 :
   View(Rect(
-    screenHeight - 6 * digitWidth,
-    screenWidth / 2 - 6 * digitWidth,
-    5 * digitWidth,
-    12 * digitWidth
+    screenHeight - 6 * DW,
+    screenWidth / 2 - 8 * DW,
+    5 * DW,
+    2 * 8 * DW
   ))
 {
 }
@@ -66,86 +67,89 @@ void Score::erase ()
 {
   printf("NEXT BALL\r\n");
   eraseDigit(0);
-  eraseDigit(9);
+  eraseDigit(13);
 }
 
 void Score::repaint ()
 {
   printf("HUMAN %d -- COMPUTER %d\r\n", human, computer);
   drawDigit(computer, 0);
-  drawDigit(human, 9);
+  drawDigit(human, 13);
 }
+
+#define BOX(x,y,w,h) painter.drawFillRect(ViewRect().X()+(x)*DW, ViewRect().Y()+(y)*DW, (w)*DW, (h)*DW)
 
 void Score::drawDigit (uint8_t digit, uint16_t yDisplacement)
 {
   painter.setForegroundColor(green);
   if (digit == 0)
   {
-    painter.drawFillRect(ViewRect().X(), ViewRect().Y() + yDisplacement * digitWidth, 5 * digitWidth, 3 * digitWidth);
+    BOX(0, yDisplacement, 5, 3);
     painter.setForegroundColor(black);
-    painter.drawFillRect(ViewRect().X() + digitWidth, ViewRect().Y() + (yDisplacement+1) * digitWidth, 3 * digitWidth, digitWidth);
+    BOX(1, yDisplacement+1, 3, 1);
   }
   else if (digit == 1)
-    painter.drawFillRect(ViewRect().X(), ViewRect().Y() + (yDisplacement+1) * digitWidth, 5 * digitWidth, digitWidth);
+  {
+    BOX(0, yDisplacement+1, 5, 1);
+  }
   else if (digit == 2)
   {
-    painter.drawFillRect(ViewRect().X(), ViewRect().Y() + yDisplacement * digitWidth, 5 * digitWidth, 3 * digitWidth);
+    BOX(0, yDisplacement, 5, 3);
     painter.setForegroundColor(black);
-    painter.drawFillRect(ViewRect().X() + 3*digitWidth, ViewRect().Y() + yDisplacement * digitWidth, digitWidth, 2 * digitWidth);
-    painter.drawFillRect(ViewRect().X() + digitWidth, ViewRect().Y() + (yDisplacement+1) * digitWidth, digitWidth, 2 * digitWidth);
+    BOX(3, yDisplacement, 1, 2);
+    BOX(1, yDisplacement+1, 1, 2);
   }
   else if (digit == 3)
   {
-    painter.drawFillRect(ViewRect().X(), ViewRect().Y() + yDisplacement * digitWidth, 5 * digitWidth, 3 * digitWidth);
+    BOX(0, yDisplacement, 5, 3);
     painter.setForegroundColor(black);
-    painter.drawFillRect(ViewRect().X() + 3*digitWidth, ViewRect().Y() + yDisplacement * digitWidth, digitWidth, 2 * digitWidth);
-    painter.drawFillRect(ViewRect().X() + digitWidth, ViewRect().Y() + yDisplacement * digitWidth, digitWidth, 2 * digitWidth);
+    BOX(3, yDisplacement, 1, 2);
+    BOX(1, yDisplacement, 1, 2);
   }
   else if (digit == 4)
   {
-    painter.drawFillRect(ViewRect().X(), ViewRect().Y() + yDisplacement * digitWidth, 5 * digitWidth, 3 * digitWidth);
+    BOX(0, yDisplacement, 5, 3);
     painter.setForegroundColor(black);
-    painter.drawFillRect(ViewRect().X() + 3*digitWidth, ViewRect().Y() + (yDisplacement+1) * digitWidth, 2 * digitWidth, digitWidth);
-    painter.drawFillRect(ViewRect().X(), ViewRect().Y() + yDisplacement * digitWidth, 2 * digitWidth, 2 * digitWidth);
+    BOX(3, yDisplacement+1, 2, 1);
+    BOX(0, yDisplacement, 2, 2);
   }
   else if (digit == 5)
   {
-    painter.drawFillRect(ViewRect().X(), ViewRect().Y() + yDisplacement * digitWidth, 5 * digitWidth, 3 * digitWidth);
+    BOX(0, yDisplacement, 5, 3);
     painter.setForegroundColor(black);
-    painter.drawFillRect(ViewRect().X() + 3*digitWidth, ViewRect().Y() + (yDisplacement+1) * digitWidth, digitWidth, 2 * digitWidth);
-    painter.drawFillRect(ViewRect().X() + digitWidth, ViewRect().Y() + yDisplacement * digitWidth, digitWidth, 2 * digitWidth);
+    BOX(3, yDisplacement+1, 1, 2);
+    BOX(1, yDisplacement, 1, 2);
   }
   else if (digit == 6)
   {
-    painter.drawFillRect(ViewRect().X(), ViewRect().Y() + yDisplacement * digitWidth, 5 * digitWidth, 3 * digitWidth);
+    BOX(0, yDisplacement, 5, 3);
     painter.setForegroundColor(black);
-    painter.drawFillRect(ViewRect().X() + 3*digitWidth, ViewRect().Y() + (yDisplacement+1) * digitWidth, digitWidth, 2 * digitWidth);
-    painter.drawFillRect(ViewRect().X() + digitWidth, ViewRect().Y() + (yDisplacement+1) * digitWidth, digitWidth, digitWidth);
+    BOX(3, yDisplacement+1, 1, 2);
+    BOX(1, yDisplacement+1, 1, 1);
   }
   else if (digit == 7)
   {
-    painter.drawFillRect(ViewRect().X() + 4*digitWidth, ViewRect().Y() + yDisplacement * digitWidth, digitWidth, 3 * digitWidth);
-    painter.drawFillRect(ViewRect().X(), ViewRect().Y() + (yDisplacement+2) * digitWidth, 4 * digitWidth, digitWidth);
+    BOX(4, yDisplacement, 1, 3);
+    BOX(0, yDisplacement+2, 4, 1);
   }
   else if (digit == 8)
   {
-    painter.drawFillRect(ViewRect().X(), ViewRect().Y() + yDisplacement * digitWidth, 5 * digitWidth, 3 * digitWidth);
+    BOX(0, yDisplacement, 5, 3);
     painter.setForegroundColor(black);
-    painter.drawFillRect(ViewRect().X() + 3*digitWidth, ViewRect().Y() + (yDisplacement+1) * digitWidth, digitWidth, digitWidth);
-    painter.drawFillRect(ViewRect().X() + digitWidth, ViewRect().Y() + (yDisplacement+1) * digitWidth, digitWidth, digitWidth);
+    BOX(3, yDisplacement+1, 1, 1);
+    BOX(1, yDisplacement+1, 1, 1);
   }
   else if (digit == 9)
   {
-    painter.drawFillRect(ViewRect().X(), ViewRect().Y() + yDisplacement * digitWidth, 5 * digitWidth, 3 * digitWidth);
+    BOX(0, yDisplacement, 5, 3);
     painter.setForegroundColor(black);
-    painter.drawFillRect(ViewRect().X() + 3*digitWidth, ViewRect().Y() + (yDisplacement+1) * digitWidth, digitWidth, digitWidth);
-    painter.drawFillRect(ViewRect().X(), ViewRect().Y() + yDisplacement * digitWidth, 2 * digitWidth, 2 * digitWidth);
+    BOX(3, yDisplacement+1, 1, 1);
+    BOX(0, yDisplacement, 2, 2);
   }
 }
 
 void Score::eraseDigit (uint16_t yDisplacement)
 {
   painter.setForegroundColor(black);
-  painter.drawFillRect(ViewRect().X(), ViewRect().Y() + yDisplacement * digitWidth, 5 * digitWidth, 3 * digitWidth);
+  BOX(0, yDisplacement, 5, 3);
 }
-
