@@ -13,8 +13,8 @@ using mono::display::Color;
 
 #define computerPlaysForHuman false
 #define msResolution 1
-#define ballSlowdown 10
-#define computerSlowdown 8
+#define ballSlowdown 5
+#define computerSlowdown 6
 #define margin 3
 #define paddleWidth 5
 #define paddleLength 50

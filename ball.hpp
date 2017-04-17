@@ -10,12 +10,14 @@ class Ball
   public ITickable,
   public mono::ui::View
 {
-  int xDirection;
-  int yDirection;
+  int xThouDirection;
+  int yThouDirection;
+  int xThou;
+  int yThou;
   mono::sensor::IBuzzer & buzzer;
   void reset ();
   void erase ();
-  void moveBallTo (mono::geo::Point position, uint16_t & x);
+  void moveBallTo (uint16_t & x);
   void stepBall (SharedState & state);
   mono::geo::Point effectuateDirection ();
   mono::geo::Point calculateNextPosition (uint16_t computerX, uint16_t humanX);
