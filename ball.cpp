@@ -18,25 +18,25 @@ void Ball::tick (SharedState & state)
   switch (state.game)
   {
     case SharedState::Init:
-      xThou = (screenHeight/2 - radius) << 10;
-      yThou = (screenWidth/2 - radius) << 10;
-      xThouDirection = 0;
-      yThouDirection = 0;
+      thouX = (screenHeight/2 - radius) << 10;
+      thouY = (screenWidth/2 - radius) << 10;
+      thouXDirection = 0;
+      thouYDirection = 0;
       moveBallTo(state.ballX);
       return;
     case SharedState::ComputerServe:
-      xThou = (screenHeight/2 - radius) << 10;
-      yThou = (screenWidth/2 - radius) << 10;
-      xThouDirection = 0;
-      yThouDirection = -1024;
+      thouX = (screenHeight/2 - radius) << 10;
+      thouY = (screenWidth/2 - radius) << 10;
+      thouXDirection = 0;
+      thouYDirection = -1024;
       moveBallTo(state.ballX);
       state.nextGameState = SharedState::GameOn;
       return;
     case SharedState::HumanServe:
-      xThou = (screenHeight/2 - radius) << 10;
-      yThou = (screenWidth/2 - radius) << 10;
-      xThouDirection = 0;
-      yThouDirection = 1024;
+      thouX = (screenHeight/2 - radius) << 10;
+      thouY = (screenWidth/2 - radius) << 10;
+      thouXDirection = 0;
+      thouYDirection = 1024;
       moveBallTo(state.ballX);
       state.nextGameState = SharedState::GameOn;
       return;
@@ -44,17 +44,17 @@ void Ball::tick (SharedState & state)
       stepBall(state);
       return;
     case SharedState::ComputerMissed:
-      xThou = (screenHeight/2 - radius) << 10;
-      yThou = (screenWidth/2 - radius) << 10;
-      xThouDirection = 0;
-      yThouDirection = 0;
+      thouX = (screenHeight/2 - radius) << 10;
+      thouY = (screenWidth/2 - radius) << 10;
+      thouXDirection = 0;
+      thouYDirection = 0;
       moveBallTo(state.ballX);
       return;
     case SharedState::HumanMissed:
-      xThou = (screenHeight/2 - radius) << 10;
-      yThou = (screenWidth/2 - radius) << 10;
-      xThouDirection = 0;
-      yThouDirection = 0;
+      thouX = (screenHeight/2 - radius) << 10;
+      thouY = (screenWidth/2 - radius) << 10;
+      thouXDirection = 0;
+      thouYDirection = 0;
       moveBallTo(state.ballX);
       return;
     case SharedState::Intermission:
@@ -69,16 +69,15 @@ void Ball::stepBall (SharedState & state)
 {
   if (state.msNow % ballSlowdown != 0)
     return;
-  // TODO
   Point corner = calculateNextPosition(state.computerX, state.humanX);
-  if (corner.X() != Position().X() || corner.Y() != Position().Y())
+  //if ((corner.X() >> 10) != Position().X() || (corner.Y() >> 10) != Position().Y())
     moveBallTo(state.ballX);
-  if (corner.Y() == 0)
+  if ((corner.Y() >> 10) == 0)
   {
     state.nextGameState = SharedState::ComputerMissed;
     buzzer.buzzAsync(2);
   }
-  else if (corner.Y() == screenWidth - 2 * radius)
+  else if ((corner.Y() >> 10) == screenWidth - 2 * radius)
   {
     state.nextGameState = SharedState::HumanMissed;
     buzzer.buzzAsync(2);
@@ -102,22 +101,22 @@ void Ball::erase ()
 
 void Ball::repaint ()
 {
+  erase();
+  setPosition(Point(thouX >> 10, thouY >> 10));
   painter.setForegroundColor(green);
   painter.drawFillRect(ViewRect().X(), ViewRect().Y(), radius * 2, radius * 2);
 }
 
 void Ball::moveBallTo (uint16_t & x)
 {
-  erase();
-  setPosition(Point(xThou >> 10, yThou >> 10));
-  repaint();
-  x = xThou >> 10;
+  scheduleRepaint();
+  x = thouX >> 10;
 }
 
 Point Ball::calculateNextPosition (uint16_t computerX, uint16_t humanX)
 {
-  int x = Position().X();
-  int y = Position().Y();
+  int x = thouX >> 10;
+  int y = thouY >> 10;
   int xCenter = x + radius;
   int yBottom = y + 2 * radius;
 
@@ -150,28 +149,28 @@ Point Ball::calculateNextPosition (uint16_t computerX, uint16_t humanX)
       // At an angle proportional to distance to center of paddle.
       if (x < computerX)
       {
-        xThouDirection = -887;
-        yThouDirection = 512;
+        thouXDirection = -887;
+        thouYDirection = 512;
       }
       else if (xCenter + radius > computerX + paddleLength)
       {
-        xThouDirection = 887;
-        yThouDirection = 512;
+        thouXDirection = 887;
+        thouYDirection = 512;
       }
       else if (xCenter < computerX + paddleLength / 4)
       {
-        xThouDirection = -724;
-        yThouDirection = 724;
+        thouXDirection = -724;
+        thouYDirection = 724;
       }
       else if (xCenter > computerX + paddleLength / 2 + paddleLength / 4)
       {
-        xThouDirection = 724;
-        yThouDirection = 724;
+        thouXDirection = 724;
+        thouYDirection = 724;
       }
       else
       {
-        xThouDirection = 0;
-        yThouDirection = 724;
+        thouXDirection = 0;
+        thouYDirection = 724;
       }
     }
   }
@@ -186,28 +185,28 @@ Point Ball::calculateNextPosition (uint16_t computerX, uint16_t humanX)
       // At an angle proportional to distance to center of paddle.
       if (x < humanX)
       {
-        xThouDirection = -887;
-        yThouDirection = -512;
+        thouXDirection = -887;
+        thouYDirection = -512;
       }
       else if (xCenter + radius > humanX + paddleLength)
       {
-        xThouDirection = 887;
-        yThouDirection = -512;
+        thouXDirection = 887;
+        thouYDirection = -512;
       }
       else if (x < humanX + paddleLength / 3)
       {
-        xThouDirection = -724;
-        yThouDirection = -724;
+        thouXDirection = -724;
+        thouYDirection = -724;
       }
       else if (xCenter + radius > humanX + paddleLength / 3 + paddleLength / 3)
       {
-        xThouDirection = 724;
-        yThouDirection = -724;
+        thouXDirection = 724;
+        thouYDirection = -724;
       }
       else
       {
-        xThouDirection = 0;
-        yThouDirection = -1024;
+        thouXDirection = 0;
+        thouYDirection = -1024;
       }
     }
   }
@@ -216,21 +215,21 @@ Point Ball::calculateNextPosition (uint16_t computerX, uint16_t humanX)
 
 Point Ball::effectuateDirection ()
 {
-  xThou += xThouDirection;
-  yThou += yThouDirection;
-  if (xThou <= 0)
+  thouX += thouXDirection;
+  thouY += thouYDirection;
+  if (thouX <= 0)
   {
     buzzer.buzzAsync(1);
-    xThouDirection = -xThouDirection;
-    if (xThou < 0)
-      xThou = -xThou;
+    thouXDirection = -thouXDirection;
+    if (thouX < 0)
+      thouX = -thouX;
   }
-  else if ((xThou >> 10) + 2*radius >= screenHeight)
+  else if ((thouX >> 10) + 2*radius >= screenHeight)
   {
     buzzer.buzzAsync(1);
-    xThouDirection = -xThouDirection;
-    if ((xThou >> 10) + 2*radius >= screenHeight)
-      xThou = ((2*(screenHeight - 2*radius)) << 10) - xThou;
+    thouXDirection = -thouXDirection;
+    if ((thouX >> 10) + 2*radius >= screenHeight)
+      thouX = ((2*(screenHeight - 2*radius)) << 10) - thouX;
   }
-  return Point(xThou >> 10, yThou >> 10);
+  return Point(thouX, thouY);
 }

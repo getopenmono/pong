@@ -22,6 +22,10 @@ void AppController::resetGame ()
   state.reset();
   timer.setCallback(this, &AppController::mainLoop);
   timer.Start();
+  ball.show();
+  player.show();
+  computer.show();
+  score.show();
 }
 
 void AppController::mainLoop ()

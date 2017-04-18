@@ -10,10 +10,14 @@ class Ball
   public ITickable,
   public mono::ui::View
 {
-  int xThouDirection;
-  int yThouDirection;
-  int xThou;
-  int yThou;
+  /* To avoid floating point calculations, these Thou variables represent
+     1/1024 of the actual value, ie., they are "scaled integers".
+   */
+  int thouXDirection;
+  int thouYDirection;
+  int thouX;
+  int thouY;
+
   mono::sensor::IBuzzer & buzzer;
   void reset ();
   void erase ();
