@@ -19,8 +19,10 @@ Encoder::Encoder (PinName pinA, PinName pinB)
   CyPins_SetPin(pinB);
 #endif
   reset();
+#ifndef EMUNO
   // Samples every 100µs.
   ticker.attach_us(this, &Encoder::sample, 100);
+#endif
 }
 
 void Encoder::reset ()
