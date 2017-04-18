@@ -10,12 +10,14 @@ Encoder::Encoder (PinName pinA, PinName pinB)
   channelA(pinA),
   channelB(pinB)
 {
+#ifndef EMUNO
   // Pull up A.
   CyPins_SetPinDriveMode(pinA, CY_PINS_DM_RES_UP);
   CyPins_SetPin(pinA);
   // Pull up B.
   CyPins_SetPinDriveMode(pinB, CY_PINS_DM_RES_UP);
   CyPins_SetPin(pinB);
+#endif
   reset();
   // Samples every 100µs.
   ticker.attach_us(this, &Encoder::sample, 100);

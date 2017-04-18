@@ -8,8 +8,8 @@
 class Encoder
 {
   int pulses;
-  uint8 lastA;
-  uint8 lastB;
+  uint8_t lastA;
+  uint8_t lastB;
   mbed::DigitalIn channelA;
   mbed::DigitalIn channelB;
   mbed::Ticker ticker;
