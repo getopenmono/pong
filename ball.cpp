@@ -157,12 +157,12 @@ Point Ball::calculateNextPosition (uint16_t computerX, uint16_t humanX)
         thouXDirection = 887;
         thouYDirection = 512;
       }
-      else if (xCenter < computerX + paddleLength / 4)
+      else if (xCenter < computerX + paddleLength / 3)
       {
         thouXDirection = -724;
         thouYDirection = 724;
       }
-      else if (xCenter > computerX + paddleLength / 2 + paddleLength / 4)
+      else if (xCenter > computerX + paddleLength / 3 + paddleLength / 3)
       {
         thouXDirection = 724;
         thouYDirection = 724;

@@ -10,10 +10,11 @@ using mono::display::Color;
 
 Human::Human ()
 :
-  View(Rect(10, 0, paddleLength, paddleWidth))
+  View(Rect(10, 0, paddleLength, paddleWidth)),
+  x(10)
 {
   lastPulses = 1;
-  setPosition(Point(0, screenWidth-paddleWidth-margin));
+  setPosition(Point(10, screenWidth-paddleWidth-margin));
 }
 
 void Human::tick (SharedState & state)
@@ -31,7 +32,7 @@ void Human::tick (SharedState & state)
   {
     followEncoder(state.encoderPulses);
   }
-  state.humanX = Position().X();
+  state.humanX = x;
 
   if (Position().X() < 0)
     state.crash = "human x negative";
@@ -47,6 +48,18 @@ void Human::erase ()
 
 void Human::repaint ()
 {
+  painter.setBackgroundColor(black);
+  // Only erase minimal area to avoid flicker.
+  uint16_t oldX = Position().X();
+  if (oldX < x)
+  {
+    painter.drawFillRect(Rect(oldX, screenWidth-paddleWidth-margin, x - oldX, paddleWidth), true);
+  }
+  else if (oldX > x)
+  {
+    painter.drawFillRect(Rect(x + paddleLength, screenWidth-paddleWidth-margin, oldX - x, paddleWidth), true);
+  }
+  setPosition(Point(x, Position().Y()));
   painter.setBackgroundColor(green);
   painter.drawFillRect(ViewRect(), true);
 }
@@ -55,7 +68,6 @@ void Human::followBall (uint16_t ballX)
 {
   if (rng.random31b() % 3 == 0)
     return;
-  int x = Position().X();
   int direction = ballX - (x + paddleLength/2);
   if (direction < 0)
     x -= 1;
@@ -66,27 +78,18 @@ void Human::followBall (uint16_t ballX)
   else if (x > screenHeight - paddleLength)
     x = screenHeight - paddleLength;
   if (x != Position().X())
-  {
-    erase();
-    setPosition(Point(x, Position().Y()));
-    repaint();
-  }
+    scheduleRepaint();
 }
 
 void Human::followEncoder (int encoderPulses)
 {
   int const direction = lastPulses - encoderPulses;
-  int oldX = Position().X();
-  int x = oldX + direction * pulsesPerPixel;
+  x = x + direction * pulsesPerPixel;
   if (x < 0)
     x = 0;
   if (x > screenHeight - paddleLength)
     x = screenHeight - paddleLength;
-  if (x != oldX)
-  {
-    erase();
-    setPosition(Point(x, Position().Y()));
-    repaint();
-  }
+  if (x != Position().X())
+    scheduleRepaint();
   lastPulses = encoderPulses;
 }

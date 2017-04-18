@@ -21,7 +21,6 @@ class Score
 public:
   Score ();
   virtual void repaint ();
-  virtual char const * getName () const { return "Score"; };
   virtual void tick (SharedState & state);
 };
 

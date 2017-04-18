@@ -8,7 +8,8 @@ using mono::geo::Rect;
 
 Computer::Computer ()
 :
-  View(Rect(100, margin, paddleLength, paddleWidth))
+  View(Rect(100, margin, paddleLength, paddleWidth)),
+  x(100)
 {
 }
 
@@ -23,7 +24,7 @@ void Computer::tick (SharedState & state)
   if (state.msNow % computerSlowdown != 0)
     return;
   followBall(state.ballX);
-  state.computerX = Position().X();
+  state.computerX = x;
 
   if (Position().X() < 0)
     state.crash = "computer x negative";
@@ -31,14 +32,20 @@ void Computer::tick (SharedState & state)
     state.crash = "computer x too high";
 }
 
-void Computer::erase ()
-{
-  painter.setBackgroundColor(black);
-  painter.drawFillRect(ViewRect(), true);
-}
-
 void Computer::repaint ()
 {
+  painter.setBackgroundColor(black);
+  // Only erase minimal area to avoid flicker.
+  uint16_t oldX = Position().X();
+  if (oldX < x)
+  {
+    painter.drawFillRect(Rect(oldX, margin, x - oldX, paddleWidth), true);
+  }
+  else if (oldX > x)
+  {
+    painter.drawFillRect(Rect(x + paddleLength, margin, oldX - x, paddleWidth), true);
+  }
+  setPosition(Point(x, margin));
   painter.setBackgroundColor(green);
   painter.drawFillRect(ViewRect(), true);
 }
@@ -47,7 +54,6 @@ void Computer::followBall (uint16_t ballX)
 {
   if (rng.random31b() % 3 == 0)
     return;
-  int x = Position().X();
   int direction = (ballX - 4 + rng.random31b() % 8) - (x + paddleLength/2);
   if (direction < 0)
     x -= 1;
@@ -58,21 +64,5 @@ void Computer::followBall (uint16_t ballX)
   else if (x > screenHeight - paddleLength)
     x = screenHeight - paddleLength;
   if (x != Position().X())
-  {
-    erase();
-    setPosition(Point(x, margin));
-    repaint();
-  }
-}
-
-bool Computer::calculateHasBall (uint16_t ballX, uint16_t ballY)
-{
-  int y = Position().Y();
-  if (y + paddleWidth >= ballY)
-  {
-    int x = Position().X();
-    if (x <= ballX && (ballX + 2 * radius) <= (x + paddleLength))
-      return true;
-  }
-  return false;
+    scheduleRepaint();
 }

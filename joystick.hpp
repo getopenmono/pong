@@ -13,7 +13,6 @@ class Joystick
   Encoder encoder;
 public:
   Joystick ();
-  virtual char const * getName () const { return "Joystick"; };
   virtual void tick (SharedState & state);
 };
 

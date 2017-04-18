@@ -31,7 +31,7 @@ void AppController::resetGame ()
 void AppController::mainLoop ()
 {
   state.msNow += msResolution;
-  sendDebugInfo();
+  //sendDebugInfo();
   scheduler.run(state);
   if (state.game == SharedState::Intermission)
   {

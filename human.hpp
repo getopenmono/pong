@@ -11,6 +11,7 @@ class Human
   public ITickable,
   public mono::ui::View
 {
+  int x;
   Rng rng;
   void erase ();
   void followEncoder (int encoderPulses);
@@ -19,7 +20,6 @@ class Human
 public:
   Human ();
   virtual void repaint ();
-  virtual char const * getName () const { return "Human"; };
   virtual void tick (SharedState & state);
 };
 
